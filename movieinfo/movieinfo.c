@@ -21,7 +21,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <argp.h>
 #include <ffmpeg/avformat.h>
 
 #define VERSION 0.1
@@ -111,7 +110,6 @@ int main (int argc, char** argv)
     char *filename;
     int err = 0, terse = 0;
 
-    // TODO: Add formatted and unformatted views.
     // parse args
     /* set program name */
     prog_name = argv[0];
