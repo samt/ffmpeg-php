@@ -27,6 +27,14 @@
 
 #define LRINT(x) ((long) ((x)+0.5))
 
+#if LIBAVFORMAT_BUILD > 4628
+#define GET_CODEC_FIELD(codec, field) codec->field
+#define GET_CODEC_PTR(codec) codec 
+#else
+#define GET_CODEC_FIELD(codec, field) codec.field
+#define GET_CODEC_PTR(codec) &codec
+#endif
+
 char* prog_name;
 
 #define STREAM_NOT_FOUND -1
@@ -36,7 +44,7 @@ static int get_stream_index(AVFormatContext *fmt_ctx, int type)
 
     for (i = 0; i < fmt_ctx->nb_streams; i++) {
         if (fmt_ctx->streams[i] &&
-                fmt_ctx->streams[i]->codec.codec_type == type) {
+                GET_CODEC_FIELD(fmt_ctx->streams[i]->codec, codec_type) == type) {
             return i;
         }
     }
@@ -85,6 +93,18 @@ static float get_framerate(AVStream *st)
 static long get_framecount(AVFormatContext *fmt_ctx, AVStream *st)
 {
     return LRINT(get_framerate(st) * get_duration(fmt_ctx));
+}
+
+
+static long get_width(AVStream *st)
+{
+    return GET_CODEC_FIELD(st->codec, width);
+}
+
+
+static long get_height(AVStream *st)
+{
+    return GET_CODEC_FIELD(st->codec, height);
 }
 
 
@@ -158,15 +178,15 @@ int main (int argc, char** argv)
 
         if (st) {
             if (terse) {
-                fprintf(stdout, "%d ",    st->codec.width);
-                fprintf(stdout, "%d ",    st->codec.height);
+                fprintf(stdout, "%d ",    get_width(st));
+                fprintf(stdout, "%d ",    get_height(st));
                 fprintf(stdout, "%0.2f ", get_framerate(st));
                 fprintf(stdout, "%0.2f ", get_duration(fmt_ctx));
                 fprintf(stdout, "%ld ",   get_framecount(fmt_ctx, st));
                 fprintf(stdout, "%d\n",   has_audio(fmt_ctx));
             } else {
-                fprintf(stdout, "width:       %d\n",    st->codec.width);
-                fprintf(stdout, "height:      %d\n",    st->codec.height);
+                fprintf(stdout, "width:       %d\n",    get_width(st));
+                fprintf(stdout, "height:      %d\n",    get_height(st));
                 fprintf(stdout, "frame rate:  %0.2f\n", get_framerate(st));
                 fprintf(stdout, "duration:    %0.2f\n", get_duration(fmt_ctx));
                 fprintf(stdout, "frame count: %ld\n",   get_framecount(fmt_ctx, st));
