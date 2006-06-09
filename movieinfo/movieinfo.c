@@ -1,7 +1,7 @@
 /*
    movieinfo - a simple utility for getting info from movie files.
 
-   Copyright (C) 2004,2005 Todd Kirby (ffmpeg.php@gmail.com)
+   Copyright (C) 2005 Todd Kirby (ffmpeg.php@gmail.com)
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -82,10 +82,21 @@ static float get_duration(AVFormatContext *fmt_ctx)
 
 static float get_framerate(AVStream *st)
 {
+    float rate = 0.0f;
+
 #if LIBAVCODEC_BUILD > 4753
-    return av_q2d(st->r_frame_rate);
+    if(GET_CODEC_FIELD(st->codec, codec_type) == CODEC_TYPE_VIDEO){
+        if(st->r_frame_rate.den && st->r_frame_rate.num) {
+            rate = av_q2d(st->r_frame_rate);
+        } else {
+            rate = 1 / av_q2d(GET_CODEC_FIELD(st->codec, time_base));
+        }
+    }
+    return (float)rate;
 #else
-    return (float)st->r_frame_rate / st->r_frame_rate_base;
+    return (float)GET_CODEC_FIELD(st->codec, frame_rate) / 
+                        GET_CODEC_FIELD(st->codec, frame_rate_base);
+#
 #endif
 }
 
