@@ -16,7 +16,7 @@ if test "$PHP_QUADRUPEL" != "no"; then
   done
 
   if test -z "$QUADRUPEL_DIR"; then
-    QUADRUPEL_INCDIR=quadrupel/include/
+    QUADRUPEL_INCDIR=quadrupel/
     AC_MSG_RESULT(...Using bundled quadrupel)
     dnl AC_MSG_ERROR(quadrupel headers not found.)
   else
