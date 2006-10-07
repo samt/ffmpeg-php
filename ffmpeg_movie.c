@@ -5,8 +5,8 @@
 
 #include "php_ffmpeg.h"
 
-#include "quadrupel/include/qp_frame.h"
-#include "quadrupel/include/qp_movie.h"
+#include "qp_frame.h"
+#include "qp_movie.h"
 #include "ffmpeg_frame.h"
 #include "ffmpeg_movie.h"
    
@@ -74,19 +74,7 @@ zend_function_entry ffmpeg_movie_class_methods[] = {
  */
 static qp_movie_context* _php_alloc_movie_ctx(int persistent)
 {
-    int i;
-    qp_movie_context *movie_ctx;
-    
-    movie_ctx = persistent ? malloc(sizeof(qp_movie_context)) : 
-                               emalloc(sizeof(qp_movie_context));
-    movie_ctx->fmt_ctx = NULL;
-    movie_ctx->frame_number = 0;
-
-    for (i = 0; i < MAX_STREAMS; i++) {
-        movie_ctx->codec_ctx[i] = NULL;
-    }
-
-    return movie_ctx;
+    return qp_alloc_movie_ctx(persistent ? NULL : _emalloc);
 }
 /* }}} */
 
@@ -226,45 +214,16 @@ PHP_FUNCTION(ffmpeg_movie)
  */
 static void _php_free_ffmpeg_movie(zend_rsrc_list_entry *rsrc TSRMLS_DC)
 {
-    int i;
-    qp_movie_context *movie_ctx = (qp_movie_context*)rsrc->ptr;    
-
-    if (movie_ctx->codec_ctx) {
-        for (i = 0; i < MAX_STREAMS; i++) {
-            if(movie_ctx->codec_ctx[i]) {
-                avcodec_close(movie_ctx->codec_ctx[i]);
-            }
-            movie_ctx->codec_ctx[i] = NULL;
-        }
-    }
-
-    av_close_input_file(movie_ctx->fmt_ctx);
-
-    efree(movie_ctx);
+    qp_free_movie_ctx((qp_movie_context*)rsrc->ptr, _efree);
 }
 /* }}} */
 
 
-/* {{{ _php_free_ffmpeg_pmovie
+/* {{{ _php_free_ffmpeg_movie
  */
 static void _php_free_ffmpeg_pmovie(zend_rsrc_list_entry *rsrc TSRMLS_DC)
 {
-    /* TODO: Factor into a single free function for pmovie and movie */
-    int i;
-    qp_movie_context *movie_ctx = (qp_movie_context*)rsrc->ptr;    
-    
-    if (movie_ctx->codec_ctx) {
-        for (i = 0; i < MAX_STREAMS; i++) {
-            if(movie_ctx->codec_ctx[i]) {
-                avcodec_close(movie_ctx->codec_ctx[i]);
-            }
-            movie_ctx->codec_ctx[i] = NULL;
-        }
-    }
-
-    av_close_input_file(movie_ctx->fmt_ctx);
-
-    free(movie_ctx);
+    qp_free_movie_ctx((qp_movie_context*)rsrc->ptr, NULL);
 }
 /* }}} */
 
