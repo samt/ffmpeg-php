@@ -5,7 +5,7 @@
 
 #include "php_ffmpeg.h"
 
-#include "quadrupel/qp_frame.h";
+#include "quadrupel/qp_frame.h"
 #include "ffmpeg_frame.h"
 #include "ffmpeg_animated_gif.h"
 
@@ -334,11 +334,11 @@ static int _php_addframe(ff_animated_gif_context *ff_animated_gif, qp_frame_cont
     c = GET_CODEC_PTR(ff_animated_gif->video_st->codec);
 
     if (frame->width != c->width || frame->height != c->height) {
-        _php_resample_frame(frame, c->width, c->height, 0,0,0,0);
+        qp_resample_frame(frame, c->width, c->height, 0,0,0,0);
     }
  
     /* convert frame to the RGB24 if needed */
-    _php_convert_frame(frame, PIX_FMT_RGB24);
+    qp_convert_frame(frame, PIX_FMT_RGB24);
    
     /* encode the image */
     out_size = avcodec_encode_video(c, ff_animated_gif->video_outbuf, 
