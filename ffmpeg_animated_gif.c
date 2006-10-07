@@ -5,6 +5,7 @@
 
 #include "php_ffmpeg.h"
 
+#include "quadrupel/qp_frame.h";
 #include "ffmpeg_frame.h"
 #include "ffmpeg_animated_gif.h"
 
@@ -325,7 +326,7 @@ void register_ffmpeg_animated_gif_class(int module_number)
 /* {{{ _php_addframe()
    add a frame to the animated gif.
  */
-static int _php_addframe(ff_animated_gif_context *ff_animated_gif, ff_frame_context *frame)
+static int _php_addframe(ff_animated_gif_context *ff_animated_gif, qp_frame_context *frame)
 {
     int out_size;
     AVCodecContext *c;
@@ -370,7 +371,7 @@ static int _php_addframe(ff_animated_gif_context *ff_animated_gif, ff_frame_cont
 PHP_FUNCTION(addFrame)
 {
     zval **argv[1];
-    ff_frame_context *ff_frame;
+    qp_frame_context *ff_frame;
     ff_animated_gif_context *ff_animated_gif;
 
     if (ZEND_NUM_ARGS() != 1) {
