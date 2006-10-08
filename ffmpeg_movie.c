@@ -259,8 +259,7 @@ PHP_FUNCTION(getComment)
 
     GET_MOVIE_RESOURCE(movie_ctx);
     
-    RETURN_STRINGL(movie_ctx->fmt_ctx->comment,
-            strlen(movie_ctx->fmt_ctx->comment), 1);
+    RETURN_STRING(qp_get_comment(movie_ctx), 1);
 }
 /* }}} */
 
@@ -274,8 +273,7 @@ PHP_FUNCTION(getTitle)
     
     GET_MOVIE_RESOURCE(movie_ctx);
 
-    RETURN_STRINGL(movie_ctx->fmt_ctx->title,
-            strlen(movie_ctx->fmt_ctx->title), 1);
+    RETURN_STRING(qp_get_title(movie_ctx), 1);
 }
 /* }}} */
 
@@ -289,8 +287,7 @@ PHP_FUNCTION(getAuthor)
     
     GET_MOVIE_RESOURCE(movie_ctx);
 
-    RETURN_STRINGL(movie_ctx->fmt_ctx->author,
-            strlen(movie_ctx->fmt_ctx->author), 1);
+    RETURN_STRING(qp_get_author(movie_ctx), 1);
 }
 /* }}} */
 
@@ -303,8 +300,7 @@ PHP_FUNCTION(getCopyright)
     
     GET_MOVIE_RESOURCE(movie_ctx);
 
-    RETURN_STRINGL(movie_ctx->fmt_ctx->copyright,
-            strlen(movie_ctx->fmt_ctx->copyright), 1);
+    RETURN_STRING(qp_get_copyright(movie_ctx), 1);
 }
 /* }}} */
 
@@ -318,8 +314,7 @@ PHP_FUNCTION(getAlbum)
     
     GET_MOVIE_RESOURCE(movie_ctx);
 
-    RETURN_STRINGL(movie_ctx->fmt_ctx->album,
-            strlen(movie_ctx->fmt_ctx->album), 1);
+    RETURN_STRING(qp_get_album(movie_ctx), 1);
 }
 /* }}} */
 
@@ -332,8 +327,7 @@ PHP_FUNCTION(getGenre)
     
     GET_MOVIE_RESOURCE(movie_ctx);
 
-    RETURN_STRINGL(movie_ctx->fmt_ctx->genre,
-            strlen(movie_ctx->fmt_ctx->genre), 1);
+    RETURN_STRING(qp_get_genre(movie_ctx), 1);
 }
 /* }}} */
 
@@ -347,7 +341,7 @@ PHP_FUNCTION(getTrackNumber)
     
     GET_MOVIE_RESOURCE(movie_ctx);
     
-    RETURN_LONG(movie_ctx->fmt_ctx->track);
+    RETURN_LONG(qp_get_track(movie_ctx));
 }
 /* }}} */
 
@@ -360,7 +354,7 @@ PHP_FUNCTION(getYear)
     
     GET_MOVIE_RESOURCE(movie_ctx);
     
-    RETURN_LONG(movie_ctx->fmt_ctx->year);
+    RETURN_LONG(qp_get_year(movie_ctx));
 }
 /* }}} */
 
@@ -412,6 +406,7 @@ PHP_FUNCTION(getFileName)
     GET_MOVIE_RESOURCE(movie_ctx);
 
     filename = qp_get_file_name(movie_ctx);
+
     RETURN_STRINGL(filename, strlen(filename), 1);
 }
 /* }}} */
