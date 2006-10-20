@@ -644,7 +644,7 @@ PHP_FUNCTION(getNextKeyFrame)
     // the frame until we're sure we get a frame back from qp_get_frame
     frame_ctx =  _php_create_ffmpeg_frame(INTERNAL_FUNCTION_PARAM_PASSTHRU);
 
-    if (!qp_get_frame(movie_ctx, QP_GETFRAME_KEYFRAME, frame_ctx)) {
+    if (qp_get_frame(movie_ctx, QP_GETFRAME_KEYFRAME, &frame_ctx) != 0) {
         RETURN_FALSE;   
     }
 }
@@ -686,7 +686,7 @@ PHP_FUNCTION(getFrame)
 
     frame_ctx =  _php_create_ffmpeg_frame(INTERNAL_FUNCTION_PARAM_PASSTHRU);
 
-    if (!qp_get_frame(movie_ctx, wanted_frame, frame_ctx)) {
+    if (qp_get_frame(movie_ctx, wanted_frame, &frame_ctx) != 0) {
         RETURN_FALSE;
     }
 }
