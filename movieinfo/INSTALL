@@ -1,4 +1,4 @@
-The movieinfo makefile expects to find ffmpeg includes at /usr/include/ffmpeg/ so make sure you configure ffmpeg with these options '--enable-shared --prefix=/usr' then do
+The movieinfo makefile expects to find ffmpeg includes at /usr/include/ffmpeg/ so either hack it to find them wherever you have ffmpeg installed or make sure you configure ffmpeg with these options '--enable-shared --prefix=/usr' then do
 
 make
 [become root]
