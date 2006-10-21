@@ -23,7 +23,7 @@
 #include <string.h>
 #include <ffmpeg/avformat.h>
 
-#define VERSION 0.1
+#define VERSION 0.4
 
 #define LRINT(x) ((long) ((x)+0.5))
 
