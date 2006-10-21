@@ -2,7 +2,7 @@ ChangeLog for movieinfo (ffmpeg-php.sourceforge.net)
 
 version 0.3 (06/09/2006):
     Bug Fixes:
-    * ffmpeg compatiblity fixes in framerate calculation.
+    * ffmpeg compatibility fixes in framerate calculation.
 
 version 0.2 (09/09/2005):
     Bug Fixes:
