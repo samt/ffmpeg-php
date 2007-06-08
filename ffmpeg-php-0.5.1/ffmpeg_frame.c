@@ -13,7 +13,7 @@
    allow ffmpeg-php to be built without access to the php sources
  */
 #if HAVE_LIBGD20
-#include "include/gd.h" 
+#include "gd.h" 
 
 #define FFMPEG_PHP_FETCH_IMAGE_RESOURCE(gd_img, ret) { \
     ZEND_GET_RESOURCE_TYPE_ID(le_gd, "gd"); \
