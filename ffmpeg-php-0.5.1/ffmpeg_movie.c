@@ -96,6 +96,7 @@ zend_function_entry ffmpeg_movie_class_methods[] = {
     PHP_FALIAS(getpixelformat,      getPixelFormat,      NULL)
     PHP_FALIAS(getbitrate,          getBitRate,          NULL)
     PHP_FALIAS(hasaudio,            hasAudio,            NULL)
+    PHP_FALIAS(hasvideo,            hasVideo,            NULL)
     PHP_FALIAS(getnextkeyframe,     getNextKeyFrame,     NULL)
     PHP_FALIAS(getframe,            getFrame,            NULL)
     PHP_FALIAS(getvideocodec,       getVideoCodec,       NULL)
@@ -154,6 +155,11 @@ static AVStream *_php_get_audio_stream(AVFormatContext *fmt_ctx)
 
 static int has_audio(ff_movie_context *ffmovie_ctx) {
     return _php_get_audio_stream(ffmovie_ctx->fmt_ctx) != NULL;
+}
+
+
+static int has_video(ff_movie_context *ffmovie_ctx) {
+    return _php_get_video_stream(ffmovie_ctx->fmt_ctx) != NULL;
 }
 
 
@@ -891,6 +897,19 @@ PHP_FUNCTION(hasAudio)
     GET_MOVIE_RESOURCE(ffmovie_ctx);
 
     RETURN_BOOL(has_audio(ffmovie_ctx));
+}
+/* }}} */
+
+
+/* {{{ proto int hasVideo()
+ */
+PHP_FUNCTION(hasVideo)
+{
+    ff_movie_context *ffmovie_ctx;
+
+    GET_MOVIE_RESOURCE(ffmovie_ctx);
+
+    RETURN_BOOL(has_video(ffmovie_ctx));
 }
 /* }}} */
 

@@ -57,6 +57,7 @@ PHP_FUNCTION(getFrameNumber);
 PHP_FUNCTION(getPixelFormat);
 PHP_FUNCTION(getBitRate);
 PHP_FUNCTION(hasAudio);
+PHP_FUNCTION(hasVideo);
 PHP_FUNCTION(getNextKeyFrame);
 PHP_FUNCTION(getFrame);
 PHP_FUNCTION(getVideoCodec);
