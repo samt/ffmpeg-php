@@ -3,6 +3,18 @@ ChangeLog for ffmpeg-php (ffmpeg-php.sourceforge.net)
 version 0.5.0 (09/29/2006)
 
     Bug Fixes:
+    * Fixed some of the tests (Thanks to Rapheal for the patch)
+    * Improved build process (Thanks to Rapheal for the suggestions)
+    * Fixed the test script so it won't generate warnings when video/audio
+      stream is missing.
+
+    New Features
+    * Added $movie->hasVideo() function to test for video stream.
+    * Copyright updated for better compatibilty with the PHP license.
+
+version 0.5.0 (09/29/2006)
+
+    Bug Fixes:
     * Fixed problem with params to av_open_input_file not getting initialized
       correctly. (Thanks to SilverCode for the fix)
 
