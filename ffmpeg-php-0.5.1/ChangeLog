@@ -3,8 +3,8 @@ ChangeLog for ffmpeg-php (ffmpeg-php.sourceforge.net)
 version 0.5.1 (06/11/2007)
 
     Bug Fixes:
-    * Fixed some of the tests (Thanks to Rapheal for the patch)
-    * Improved build process (Thanks to Rapheal for the suggestions)
+    * Fixed some of the tests (Thanks to Raphael Geissert for the patch)
+    * Improved build process (Thanks to Raphael Geissert for the suggestions)
     * Fixed the test script so it won't generate warnings when video/audio
       stream is missing.
 
