@@ -38,6 +38,8 @@
 #include "php_globals.h"
 #include "ext/standard/info.h"
 
+#include "config.h"
+
 #include "php_ffmpeg.h"
 
 #include "ffmpeg_frame.h"

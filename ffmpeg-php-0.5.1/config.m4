@@ -1,6 +1,16 @@
 PHP_ARG_WITH(ffmpeg,for ffmpeg support, 
 [  --with-ffmpeg[=DIR]       Include ffmpeg support (requires ffmpeg >= 0.49.0).])
 
+PHP_ARG_ENABLE(ffmpeg-force-gd, whether to force gd support in ffmpeg-php, [  --ffmpeg-force-gd     skip checks for gd libs and assume they are present.], no, no)
+
+AC_DEFUN([FFMPEG_FORCE_GD_CK],[
+    AC_DEFINE(HAVE_LIBGD20, 1, [ ])
+])
+
+if test "$PHP_FFMPEG_FORCE_GD" != "no"; then
+    FFMPEG_FORCE_GD_CK
+fi
+
 dnl Determine path to ffmpeg libs
 if test "$PHP_FFMPEG" != "no"; then
 

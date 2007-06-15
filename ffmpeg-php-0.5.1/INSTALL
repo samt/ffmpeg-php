@@ -97,19 +97,8 @@ Q: I get '`gdImage' undeclared or `gdImagePtr''undeclared when I try to
 
 A: Your version of php is compiled without gd support. Make sure to use the 
    '--with-gd' flag when configuring php. If you're sure you have gd but 
-   it is not being detected you can change the line...
-
-   //#define HAVE_LIBGD20
-
-   ...to...
-
-   #define HAVE_LIBGD20
-
-   ...in ffmpeg_frame.h and run...
-   
-   make clean && make 
-   
-   ...to force ffmpeg to recompile with gd support.
+   it is not being detected, reconfigure the build with 
+   '--enable-ffmpeg-force-gd' to force ffmpeg-php to build with gd support.
 
 Q: I get 'avcodec.h: No such file or directory' when I try to 'make' ffmpeg-php 
 
