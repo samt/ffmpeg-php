@@ -21,123 +21,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ffmpeg/avformat.h>
+#include "quadrupel/qp_util.h"
+#include "quadrupel/qp_movie.h"
 
 #define VERSION 0.4
 
-#define LRINT(x) ((long) ((x)+0.5))
-
-#if LIBAVFORMAT_BUILD > 4628
-#define GET_CODEC_FIELD(codec, field) codec->field
-#define GET_CODEC_PTR(codec) codec 
-#else
-#define GET_CODEC_FIELD(codec, field) codec.field
-#define GET_CODEC_PTR(codec) &codec
-#endif
-
 char* prog_name;
-
-#define STREAM_NOT_FOUND -1
-static int get_stream_index(AVFormatContext *fmt_ctx, int type)
-{
-    int i;
-
-    for (i = 0; i < fmt_ctx->nb_streams; i++) {
-        if (fmt_ctx->streams[i] &&
-                GET_CODEC_FIELD(fmt_ctx->streams[i]->codec, codec_type) == type) {
-            return i;
-        }
-    }
-
-    return STREAM_NOT_FOUND;
-}
-
-
-static AVStream *get_video_stream(AVFormatContext *fmt_ctx)
-{
-    int i = get_stream_index(fmt_ctx, CODEC_TYPE_VIDEO);
-    return i == STREAM_NOT_FOUND ? NULL : fmt_ctx->streams[i];
-}
-
-
-static AVStream *get_audio_stream(AVFormatContext *fmt_ctx)
-{
-    int i = get_stream_index(fmt_ctx, CODEC_TYPE_AUDIO);
-    return i == STREAM_NOT_FOUND ? NULL : fmt_ctx->streams[i];
-}
-
-
-static float get_duration(AVFormatContext *fmt_ctx)
-{
-    float duration;
-
-    duration = (float)fmt_ctx->duration / AV_TIME_BASE;
-
-    if (duration < 0) {
-        duration = 0.0f;
-    }
-    return duration;
-}
-
-
-static float get_framerate(AVStream *st)
-{
-    float rate = 0.0f;
-
-#if LIBAVCODEC_BUILD > 4753
-    if(GET_CODEC_FIELD(st->codec, codec_type) == CODEC_TYPE_VIDEO){
-        if(st->r_frame_rate.den && st->r_frame_rate.num) {
-            rate = av_q2d(st->r_frame_rate);
-        } else {
-            rate = 1 / av_q2d(GET_CODEC_FIELD(st->codec, time_base));
-        }
-    }
-    return (float)rate;
-#else
-    return (float)GET_CODEC_FIELD(st->codec, frame_rate) / 
-                        GET_CODEC_FIELD(st->codec, frame_rate_base);
-#
-#endif
-}
-
-
-static long get_framecount(AVFormatContext *fmt_ctx, AVStream *st)
-{
-    return LRINT(get_framerate(st) * get_duration(fmt_ctx));
-}
-
-
-static long get_width(AVStream *st)
-{
-    return GET_CODEC_FIELD(st->codec, width);
-}
-
-
-static long get_height(AVStream *st)
-{
-    return GET_CODEC_FIELD(st->codec, height);
-}
-
-
-static int has_audio(AVFormatContext *fmt_ctx)
-{
-    return get_audio_stream(fmt_ctx) ? 1 : 0;
-}
-
 
 static void usage(char *prog_name)
 {
   printf("Usage: %s [OPTIONS]... MOVIE_FILES...\n", prog_name);
-  printf("\t-t -terse  Print output in a format that is easily parsable by scripts.\n");
-  printf("\t-h -help   Output this help text.\n");
+  printf("\t-terse  Print output in a format that is easily parsable by scripts.\n");
+  printf("\t-help   Output this help text.\n");
 }
 
 
 int main (int argc, char** argv)
 {
-    AVFormatContext *fmt_ctx = NULL;
-    AVFormatParameters params;
-    AVStream *st;
+    qp_movie_context *movie_ctx = NULL;
     char *filename;
     int err = 0, terse = 0;
 
@@ -168,59 +69,60 @@ int main (int argc, char** argv)
         argv++;
     }
 
-    // init ffmpeg libs
-    av_register_all();
+    // init quadrupel
+    quadrupel_init();
 
     // parse unamed arguments
     while (argc > 0 && argv[0][0] != '-') {
         filename = argv[0];
 
-        /* open the file with generic libav function */
-        if (av_open_input_file(&fmt_ctx, filename, NULL, 0, &params)) {
+        movie_ctx = qp_alloc_movie_ctx(NULL);
+
+        if (qp_open_movie_file(movie_ctx, filename, 0)) {
             err = -1;
             goto done;
         }
 
-        /* If not enough info to get the stream parameters, decode the
-         *        first frames to get it. */
-        av_find_stream_info(fmt_ctx);
-
-        st = get_video_stream(fmt_ctx);
-
-        if (st) {
+        if (qp_has_video(movie_ctx)) {
             if (terse) {
-                fprintf(stdout, "%d ",    get_width(st));
-                fprintf(stdout, "%d ",    get_height(st));
-                fprintf(stdout, "%0.2f ", get_framerate(st));
-                fprintf(stdout, "%0.2f ", get_duration(fmt_ctx));
-                fprintf(stdout, "%ld ",   get_framecount(fmt_ctx, st));
-                fprintf(stdout, "%d\n",   has_audio(fmt_ctx));
+                fprintf(stdout, "%d ",    qp_get_movie_width(movie_ctx));
+                fprintf(stdout, "%d ",    qp_get_movie_height(movie_ctx));
+                fprintf(stdout, "%0.2f ", qp_get_frame_rate(movie_ctx));
+                fprintf(stdout, "%0.2f ", qp_get_duration(movie_ctx));
+                fprintf(stdout, "%ld ",   qp_get_frame_count(movie_ctx));
+                fprintf(stdout, "%0.3f ", qp_get_pixel_aspect_ratio(movie_ctx));
+                fprintf(stdout, "%d\n",   qp_has_audio(movie_ctx));
             } else {
-                fprintf(stdout, "width:       %d\n",    get_width(st));
-                fprintf(stdout, "height:      %d\n",    get_height(st));
-                fprintf(stdout, "frame rate:  %0.2f\n", get_framerate(st));
-                fprintf(stdout, "duration:    %0.2f\n", get_duration(fmt_ctx));
-                fprintf(stdout, "frame count: %ld\n",   get_framecount(fmt_ctx, st));
-                fprintf(stdout, "has audio:   %d\n\n",  has_audio(fmt_ctx));
+                fprintf(stdout, "width:        %d\n",    qp_get_movie_width(movie_ctx));
+                fprintf(stdout, "height:       %d\n",    qp_get_movie_height(movie_ctx));
+                fprintf(stdout, "frame rate:   %0.2f\n", qp_get_frame_rate(movie_ctx));
+                fprintf(stdout, "duration:     %0.2f\n", qp_get_duration(movie_ctx));
+                fprintf(stdout, "frame count:  %ld\n",   qp_get_frame_count(movie_ctx));
+                fprintf(stdout, "pixel aspect: %0.3f\n",   qp_get_pixel_aspect_ratio(movie_ctx));
+                fprintf(stdout, "has audio:    %d\n\n",  qp_has_audio(movie_ctx));
             }
         } else {
             fprintf(stderr, "Can't find a video stream in this file\n");
             err = -1;
         }
 
-        av_close_input_file(fmt_ctx);
-        fmt_ctx = NULL;
+        if (movie_ctx) {
+            qp_free_movie_ctx(movie_ctx, NULL);
+            movie_ctx = NULL;
+        }
 
         argc--;
         argv++;
     }
 
 done:
-    // Clean up ffmpeg stuff 
-    av_free_static();
-    if (fmt_ctx) {
-        av_close_input_file(fmt_ctx);
+    // Clean up qp stuff 
+    if (movie_ctx) {
+        qp_free_movie_ctx(movie_ctx, NULL);
+        movie_ctx = NULL;
     }
+
+    quadrupel_shutdown();
 
     exit(err);
 }   

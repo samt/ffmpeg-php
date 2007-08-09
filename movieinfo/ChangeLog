@@ -1,5 +1,9 @@
 ChangeLog for movieinfo (ffmpeg-php.sourceforge.net)
 
+version 0.5 (05/21(2007):
+    New Features
+    * Switched to quadrupel library for ffmpeg access.
+
 version 0.3 (06/09/2006):
     Bug Fixes:
     * ffmpeg compatibility fixes in framerate calculation.
