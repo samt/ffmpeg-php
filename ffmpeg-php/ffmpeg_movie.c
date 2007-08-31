@@ -74,39 +74,39 @@ static int le_ffmpeg_pmovie;
 zend_function_entry ffmpeg_movie_class_methods[] = {
    
     /* contructor */
-    PHP_FE(ffmpeg_movie, NULL)
+    PHP_ME(ffmpeg_movie, __construct, NULL, 0)
 
     /* methods */
-    PHP_FALIAS(getduration,         getDuration,         NULL)
-    PHP_FALIAS(getframecount,       getFrameCount,       NULL)
-    PHP_FALIAS(getframerate,        getFrameRate,        NULL)
-    PHP_FALIAS(getfilename,         getFileName,         NULL)
-    PHP_FALIAS(getcomment,          getComment,          NULL)
-    PHP_FALIAS(gettitle,            getTitle,            NULL)
-    PHP_FALIAS(getauthor,           getAuthor,           NULL)
-    PHP_FALIAS(getartist,           getAuthor,           NULL)
-    PHP_FALIAS(getcopyright,        getCopyright,        NULL)
-    PHP_FALIAS(getalbum,            getAlbum,            NULL)
-    PHP_FALIAS(getgenre,            getGenre,            NULL)
-    PHP_FALIAS(getyear,             getYear,             NULL)
-    PHP_FALIAS(gettracknumber,      getTrackNumber,      NULL)
-    PHP_FALIAS(getframewidth,       getFrameWidth,       NULL)
-    PHP_FALIAS(getframeheight,      getFrameHeight,      NULL)
-    PHP_FALIAS(getframenumber,      getFrameNumber,      NULL)
-    PHP_FALIAS(getpixelformat,      getPixelFormat,      NULL)
-    PHP_FALIAS(getbitrate,          getBitRate,          NULL)
-    PHP_FALIAS(hasaudio,            hasAudio,            NULL)
-    PHP_FALIAS(hasvideo,            hasVideo,            NULL)
-    PHP_FALIAS(getnextkeyframe,     getNextKeyFrame,     NULL)
-    PHP_FALIAS(getframe,            getFrame,            NULL)
-    PHP_FALIAS(getvideocodec,       getVideoCodec,       NULL)
-    PHP_FALIAS(getaudiocodec,       getAudioCodec,       NULL)
-    PHP_FALIAS(getaudiochannels,    getAudioChannels,    NULL)
-    PHP_FALIAS(getaudiosamplerate,  getAudioSampleRate,  NULL)
-    PHP_FALIAS(getaudiobitrate,     getAudioBitRate,     NULL)
-    PHP_FALIAS(getvideobitrate,     getVideoBitRate,     NULL)
-    PHP_FALIAS(getpixelaspectratio, getPixelAspectRatio, NULL)
-    {NULL, NULL, NULL}
+    PHP_MALIAS(ffmpeg_movie, getduration,         getDuration,         NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getframecount,       getFrameCount,       NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getframerate,        getFrameRate,        NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getfilename,         getFileName,         NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getcomment,          getComment,          NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, gettitle,            getTitle,            NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getauthor,           getAuthor,           NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getartist,           getAuthor,           NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getcopyright,        getCopyright,        NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getalbum,            getAlbum,            NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getgenre,            getGenre,            NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getyear,             getYear,             NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, gettracknumber,      getTrackNumber,      NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getframewidth,       getFrameWidth,       NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getframeheight,      getFrameHeight,      NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getframenumber,      getFrameNumber,      NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getpixelformat,      getPixelFormat,      NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getbitrate,          getBitRate,          NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, hasaudio,            hasAudio,            NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, hasvideo,            hasVideo,            NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getnextkeyframe,     getNextKeyFrame,     NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getframe,            getFrame,            NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getvideocodec,       getVideoCodec,       NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getaudiocodec,       getAudioCodec,       NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getaudiochannels,    getAudioChannels,    NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getaudiosamplerate,  getAudioSampleRate,  NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getaudiobitrate,     getAudioBitRate,     NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getvideobitrate,     getVideoBitRate,     NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getpixelaspectratio, getPixelAspectRatio, NULL, 0)
+    {NULL, 0, NULL, 0, NULL, 0}
 };
 /* }}} */
 
@@ -235,7 +235,7 @@ static int _php_open_movie_file(ff_movie_context *ffmovie_ctx,
 {
     if (ffmovie_ctx->fmt_ctx) {
         av_close_input_file(ffmovie_ctx->fmt_ctx);
-        ffmovie_ctx->fmt_ctx == NULL;
+        ffmovie_ctx->fmt_ctx = NULL;
     }
     
     /* open the file with generic libav function */
@@ -257,7 +257,7 @@ static int _php_open_movie_file(ff_movie_context *ffmovie_ctx,
 /* {{{ proto object ffmpeg_movie(string filename) 
    Constructor for ffmpeg_movie objects
  */
-PHP_FUNCTION(ffmpeg_movie)
+PHP_METHOD(ffmpeg_movie, __construct)
 {
     int persistent = 0, hashkey_length = 0;
     char *filename = NULL, *fullpath = NULL, *hashkey = NULL;
@@ -509,7 +509,7 @@ static AVCodecContext* _php_get_decoder_context(ff_movie_context *ffmovie_ctx,
 
 /* {{{ proto string getComment()
  */
-PHP_FUNCTION(getComment)
+PHP_METHOD(ffmpeg_movie, getComment)
 {
     ff_movie_context *ffmovie_ctx;
 
@@ -524,7 +524,7 @@ PHP_FUNCTION(getComment)
 /* {{{ proto string getTitle()
  * Return title field from movie or title ID3 tag from an MP3 file.
  */
-PHP_FUNCTION(getTitle)
+PHP_METHOD(ffmpeg_movie, getTitle)
 {
     ff_movie_context *ffmovie_ctx;
     
@@ -539,7 +539,7 @@ PHP_FUNCTION(getTitle)
 /* {{{ proto string getAuthor() or getArtist()
  * Return author field from a movie or artist ID3 tag from am MP3 files.
  */
-PHP_FUNCTION(getAuthor)
+PHP_METHOD(ffmpeg_movie, getAuthor)
 {
     ff_movie_context *ffmovie_ctx;
     
@@ -553,7 +553,7 @@ PHP_FUNCTION(getAuthor)
 
 /* {{{ proto string getCopyright()
  */
-PHP_FUNCTION(getCopyright)
+PHP_METHOD(ffmpeg_movie, getCopyright)
 {
     ff_movie_context *ffmovie_ctx;
     
@@ -568,7 +568,7 @@ PHP_FUNCTION(getCopyright)
 /* {{{ proto string getAlbum()
  *  Return ID3 album field from an mp3 file
  */
-PHP_FUNCTION(getAlbum)
+PHP_METHOD(ffmpeg_movie, getAlbum)
 {
     ff_movie_context *ffmovie_ctx;
     
@@ -582,7 +582,7 @@ PHP_FUNCTION(getAlbum)
 /* {{{ proto string getGenre()
  *  Return ID3 genre field from an mp3 file
  */
-PHP_FUNCTION(getGenre)
+PHP_METHOD(ffmpeg_movie, getGenre)
 {
     ff_movie_context *ffmovie_ctx;
     
@@ -597,7 +597,7 @@ PHP_FUNCTION(getGenre)
 /* {{{ proto int getTrackNumber()
  *  Return ID3 track field from an mp3 file
  */
-PHP_FUNCTION(getTrackNumber)
+PHP_METHOD(ffmpeg_movie, getTrackNumber)
 {
     ff_movie_context *ffmovie_ctx;
     
@@ -610,7 +610,7 @@ PHP_FUNCTION(getTrackNumber)
 /* {{{ proto int getYear()
  *  Return ID3 year field from an mp3 file
  */
-PHP_FUNCTION(getYear)
+PHP_METHOD(ffmpeg_movie, getYear)
 {
     ff_movie_context *ffmovie_ctx;
     
@@ -639,7 +639,7 @@ static float _php_get_duration(ff_movie_context *ffmovie_ctx)
 
 /* {{{ proto int getDuration()
  */
-PHP_FUNCTION(getDuration)
+PHP_METHOD(ffmpeg_movie, getDuration)
 {
     ff_movie_context *ffmovie_ctx;
        
@@ -695,7 +695,7 @@ static long _php_get_framecount(ff_movie_context *ffmovie_ctx)
 
 /* {{{ proto int getFrameCount()
  */
-PHP_FUNCTION(getFrameCount)
+PHP_METHOD(ffmpeg_movie, getFrameCount)
 {
     ff_movie_context *ffmovie_ctx;
     GET_MOVIE_RESOURCE(ffmovie_ctx);
@@ -706,7 +706,7 @@ PHP_FUNCTION(getFrameCount)
 
 /* {{{ proto int getFrameRate()
  */
-PHP_FUNCTION(getFrameRate)
+PHP_METHOD(ffmpeg_movie, getFrameRate)
 {
     ff_movie_context *ffmovie_ctx;
     
@@ -719,7 +719,7 @@ PHP_FUNCTION(getFrameRate)
 
 /* {{{ proto string getFileName()
  */
-PHP_FUNCTION(getFileName)
+PHP_METHOD(ffmpeg_movie, getFileName)
 {
     ff_movie_context *ffmovie_ctx;
     char* filename;
@@ -749,7 +749,7 @@ static int _php_get_framewidth(ff_movie_context *ffmovie_ctx)
 
 /* {{{ proto int getFrameWidth()
  */
-PHP_FUNCTION(getFrameWidth)
+PHP_METHOD(ffmpeg_movie, getFrameWidth)
 {
     ff_movie_context *ffmovie_ctx;
     
@@ -777,7 +777,7 @@ static int _php_get_frameheight(ff_movie_context *ffmovie_ctx)
 
 /* {{{ proto int getFrameHeight()
  */
-PHP_FUNCTION(getFrameHeight)
+PHP_METHOD(ffmpeg_movie, getFrameHeight)
 {
     ff_movie_context *ffmovie_ctx;
 
@@ -810,7 +810,7 @@ static long _php_get_framenumber(ff_movie_context *ffmovie_ctx)
 
 /* {{{ proto resource getFrameNumber()
  */
-PHP_FUNCTION(getFrameNumber)
+PHP_METHOD(ffmpeg_movie, getFrameNumber)
 {
     ff_movie_context *ffmovie_ctx;
     int frame_number = 0;
@@ -843,7 +843,7 @@ static int _php_get_pixelformat(ff_movie_context *ffmovie_ctx)
 
 /* {{{ proto int getPixelFormat()
  */
-PHP_FUNCTION(getPixelFormat)
+PHP_METHOD(ffmpeg_movie, getPixelFormat)
 {
     int pix_fmt;
     const char *fmt;
@@ -877,7 +877,7 @@ static int _php_get_bitrate(ff_movie_context *ffmovie_ctx)
 
 /* {{{ proto int getBitrate()
  */
-PHP_FUNCTION(getBitRate)
+PHP_METHOD(ffmpeg_movie, getBitRate)
 {
     ff_movie_context *ffmovie_ctx;
     
@@ -890,7 +890,7 @@ PHP_FUNCTION(getBitRate)
 
 /* {{{ proto int hasAudio()
  */
-PHP_FUNCTION(hasAudio)
+PHP_METHOD(ffmpeg_movie, hasAudio)
 {
     ff_movie_context *ffmovie_ctx;
 
@@ -903,7 +903,7 @@ PHP_FUNCTION(hasAudio)
 
 /* {{{ proto int hasVideo()
  */
-PHP_FUNCTION(hasVideo)
+PHP_METHOD(ffmpeg_movie, hasVideo)
 {
     ff_movie_context *ffmovie_ctx;
 
@@ -966,7 +966,7 @@ static const char* _php_get_codec_name(ff_movie_context *ffmovie_ctx, int type)
 
 /* {{{ proto int getVideoCodec()
  */
-PHP_FUNCTION(getVideoCodec)
+PHP_METHOD(ffmpeg_movie, getVideoCodec)
 {
     ff_movie_context *ffmovie_ctx;
     char *codec_name;
@@ -986,7 +986,7 @@ PHP_FUNCTION(getVideoCodec)
 
 /* {{{ proto int getAudioCodec()
  */
-PHP_FUNCTION(getAudioCodec)
+PHP_METHOD(ffmpeg_movie, getAudioCodec)
 {
     ff_movie_context *ffmovie_ctx;
     char *codec_name;
@@ -1022,7 +1022,7 @@ static int _php_get_codec_channels(ff_movie_context *ffmovie_ctx, int type)
 
 /* {{{ proto int getAudioChannels()
  */
-PHP_FUNCTION(getAudioChannels)
+PHP_METHOD(ffmpeg_movie, getAudioChannels)
 {
     ff_movie_context *ffmovie_ctx;
     int channels;
@@ -1058,7 +1058,7 @@ static int _php_get_codec_sample_rate(ff_movie_context *ffmovie_ctx, int type)
 
 /* {{{ proto int getAudioSampleRate()
  */
-PHP_FUNCTION(getAudioSampleRate)
+PHP_METHOD(ffmpeg_movie, getAudioSampleRate)
 {
     ff_movie_context *ffmovie_ctx = NULL;
     int sample_rate = 0;
@@ -1094,7 +1094,7 @@ static int _php_get_codec_bit_rate(ff_movie_context *ffmovie_ctx, int type)
 
 /* {{{ proto int getAudioBitRate()
  */
-PHP_FUNCTION(getAudioBitRate)
+PHP_METHOD(ffmpeg_movie, getAudioBitRate)
 {
     ff_movie_context *ffmovie_ctx = NULL;
     int bit_rate = 0;
@@ -1114,7 +1114,7 @@ PHP_FUNCTION(getAudioBitRate)
 
 /* {{{ proto int getVideoBitRate()
  */
-PHP_FUNCTION(getVideoBitRate)
+PHP_METHOD(ffmpeg_movie, getVideoBitRate)
 {
     ff_movie_context *ffmovie_ctx = NULL;
     int bit_rate = 0;
@@ -1299,7 +1299,7 @@ static int _php_get_ff_frame(ff_movie_context *ffmovie_ctx,
 
 /* {{{ proto resource getNextKeyFrame()
  */
-PHP_FUNCTION(getNextKeyFrame)
+PHP_METHOD(ffmpeg_movie, getNextKeyFrame)
 {
     ff_movie_context *ffmovie_ctx;
 
@@ -1319,7 +1319,7 @@ PHP_FUNCTION(getNextKeyFrame)
 
 /* {{{ proto resource getFrame([int frame])
  */
-PHP_FUNCTION(getFrame)
+PHP_METHOD(ffmpeg_movie, getFrame)
 {
     zval **argv[1];
     int wanted_frame = 0; 
@@ -1403,7 +1403,7 @@ static double _php_get_sample_aspect_ratio(ff_movie_context *ffmovie_ctx)
 
 /* {{{ proto double getPixelAspectRatio()
  */
-PHP_FUNCTION(getPixelAspectRatio)
+PHP_METHOD(ffmpeg_movie, getPixelAspectRatio)
 {
     double aspect;
     ff_movie_context *ffmovie_ctx;

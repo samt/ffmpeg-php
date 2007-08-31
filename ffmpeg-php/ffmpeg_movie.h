@@ -36,37 +36,37 @@
 #include <avformat.h>
 
 /* movie constructor */
-PHP_FUNCTION(ffmpeg_movie);
+PHP_METHOD(ffmpeg_movie, __construct);
 
 /* movie methods */
-PHP_FUNCTION(getDuration);
-PHP_FUNCTION(getFrameCount);
-PHP_FUNCTION(getFrameRate);
-PHP_FUNCTION(getFileName);
-PHP_FUNCTION(getComment);
-PHP_FUNCTION(getTitle);
-PHP_FUNCTION(getAuthor);
-PHP_FUNCTION(getCopyright);
-PHP_FUNCTION(getAlbum);
-PHP_FUNCTION(getGenre);
-PHP_FUNCTION(getTrackNumber);
-PHP_FUNCTION(getYear);
-PHP_FUNCTION(getFrameWidth);
-PHP_FUNCTION(getFrameHeight);
-PHP_FUNCTION(getFrameNumber);
-PHP_FUNCTION(getPixelFormat);
-PHP_FUNCTION(getBitRate);
-PHP_FUNCTION(hasAudio);
-PHP_FUNCTION(hasVideo);
-PHP_FUNCTION(getNextKeyFrame);
-PHP_FUNCTION(getFrame);
-PHP_FUNCTION(getVideoCodec);
-PHP_FUNCTION(getAudioCodec);
-PHP_FUNCTION(getAudioChannels);
-PHP_FUNCTION(getAudioSampleRate);
-PHP_FUNCTION(getAudioBitRate);
-PHP_FUNCTION(getVideoBitRate);
-PHP_FUNCTION(getPixelAspectRatio);
+PHP_METHOD(ffmpeg_movie, getDuration);
+PHP_METHOD(ffmpeg_movie, getFrameCount);
+PHP_METHOD(ffmpeg_movie, getFrameRate);
+PHP_METHOD(ffmpeg_movie, getFileName);
+PHP_METHOD(ffmpeg_movie, getComment);
+PHP_METHOD(ffmpeg_movie, getTitle);
+PHP_METHOD(ffmpeg_movie, getAuthor);
+PHP_METHOD(ffmpeg_movie, getCopyright);
+PHP_METHOD(ffmpeg_movie, getAlbum);
+PHP_METHOD(ffmpeg_movie, getGenre);
+PHP_METHOD(ffmpeg_movie, getTrackNumber);
+PHP_METHOD(ffmpeg_movie, getYear);
+PHP_METHOD(ffmpeg_movie, getFrameWidth);
+PHP_METHOD(ffmpeg_movie, getFrameHeight);
+PHP_METHOD(ffmpeg_movie, getFrameNumber);
+PHP_METHOD(ffmpeg_movie, getPixelFormat);
+PHP_METHOD(ffmpeg_movie, getBitRate);
+PHP_METHOD(ffmpeg_movie, hasAudio);
+PHP_METHOD(ffmpeg_movie, hasVideo);
+PHP_METHOD(ffmpeg_movie, getNextKeyFrame);
+PHP_METHOD(ffmpeg_movie, getFrame);
+PHP_METHOD(ffmpeg_movie, getVideoCodec);
+PHP_METHOD(ffmpeg_movie, getAudioCodec);
+PHP_METHOD(ffmpeg_movie, getAudioChannels);
+PHP_METHOD(ffmpeg_movie, getAudioSampleRate);
+PHP_METHOD(ffmpeg_movie, getAudioBitRate);
+PHP_METHOD(ffmpeg_movie, getVideoBitRate);
+PHP_METHOD(ffmpeg_movie, getPixelAspectRatio);
 
 typedef struct {
     AVFormatContext *fmt_ctx;
