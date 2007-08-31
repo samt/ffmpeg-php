@@ -40,7 +40,12 @@ if test "$PHP_FFMPEG" != "no"; then
       FFMPEG_LIBDIR=$i/lib
       break
     fi
-  done
+    dnl PATCH: 1785450 x86_64 support (Bent Nagstrup Terp)
+    if test -f $i/lib64/libavcodec.so; then
+      FFMPEG_LIBDIR=$i/lib64
+      break
+    fi
+    done
 
   if test -z "$FFMPEG_LIBDIR"; then
     AC_MSG_ERROR(ffmpeg share libraries not found. Make sure you've built ffmpeg as shared libs using the --enable-shared option)
