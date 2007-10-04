@@ -72,13 +72,13 @@ int main (int argc, char** argv)
     // init quadrupel
     quadrupel_init();
 
-    // parse unamed arguments
+    // parse unnamed arguments
     while (argc > 0 && argv[0][0] != '-') {
         filename = argv[0];
 
         movie_ctx = qp_alloc_movie_ctx(NULL);
 
-        if (qp_open_movie_file(movie_ctx, filename, 0)) {
+        if (qp_open_movie_file(movie_ctx, filename)) {
             err = -1;
             goto done;
         }
@@ -98,7 +98,7 @@ int main (int argc, char** argv)
                 fprintf(stdout, "frame rate:   %0.2f\n", qp_get_frame_rate(movie_ctx));
                 fprintf(stdout, "duration:     %0.2f\n", qp_get_duration(movie_ctx));
                 fprintf(stdout, "frame count:  %ld\n",   qp_get_frame_count(movie_ctx));
-                fprintf(stdout, "pixel aspect: %0.3f\n",   qp_get_pixel_aspect_ratio(movie_ctx));
+                fprintf(stdout, "pixel aspect: %0.3f\n", qp_get_pixel_aspect_ratio(movie_ctx));
                 fprintf(stdout, "has audio:    %d\n\n",  qp_has_audio(movie_ctx));
             }
         } else {
