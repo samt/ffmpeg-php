@@ -37,10 +37,11 @@
 #include "config.h"
 #endif
 
+#include "php.h"
+
 #include <avcodec.h>
 #include <avformat.h>
 
-#include "php.h"
 #include "php_ini.h"
 #include "php_globals.h"
 #include "ext/standard/info.h"
@@ -133,7 +134,7 @@ PHP_MINFO_FUNCTION(ffmpeg)
     php_info_print_table_row(2, "libavformat version", LIBAVFORMAT_IDENT);
 #if HAVE_LIBGD20
     php_info_print_table_row(2, "ffmpeg-php gd support ", "enabled");
-#elif
+#else
     php_info_print_table_row(2, "ffmpeg-php gd support ", "disabled");
 #endif // HAVE_LIBGD20
     php_info_print_table_end();

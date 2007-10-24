@@ -106,7 +106,7 @@ zend_function_entry ffmpeg_movie_class_methods[] = {
     PHP_MALIAS(ffmpeg_movie, getaudiobitrate,     getAudioBitRate,     NULL, 0)
     PHP_MALIAS(ffmpeg_movie, getvideobitrate,     getVideoBitRate,     NULL, 0)
     PHP_MALIAS(ffmpeg_movie, getpixelaspectratio, getPixelAspectRatio, NULL, 0)
-    {NULL, 0, NULL, 0, NULL, 0}
+    {NULL, NULL, NULL, 0, 0}
 };
 /* }}} */
 

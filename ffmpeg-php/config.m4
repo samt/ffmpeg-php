@@ -45,6 +45,11 @@ if test "$PHP_FFMPEG" != "no"; then
       FFMPEG_LIBDIR=$i/lib64
       break
     fi
+    dnl MacOS-X support (Alexey Zakhlestin)
+    if test -f $i/lib/libavcodec.dylib; then
+      FFMPEG_LIBDIR=$i/lib
+      break
+    fi
     done
 
   if test -z "$FFMPEG_LIBDIR"; then

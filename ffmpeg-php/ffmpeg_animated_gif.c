@@ -198,7 +198,7 @@ static void php_open_agif_file(ff_animated_gif_context *ff_animated_gif,
 PHP_FUNCTION(ffmpeg_animated_gif)
 {
     zval ***argv;
-    int ret, width, height, frame_rate, loop_count;
+    int ret, width, height, frame_rate, loop_count = 0;
     char *filename = NULL;
     ff_animated_gif_context *ff_animated_gif;
     
