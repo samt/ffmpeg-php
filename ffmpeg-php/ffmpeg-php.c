@@ -75,6 +75,7 @@ ZEND_GET_MODULE(ffmpeg);
 extern void register_ffmpeg_movie_class(int);
 extern void register_ffmpeg_animated_gif_class(int);
 extern void register_ffmpeg_frame_class(int);
+extern void ffmpeg_errorhandler(void *ptr, int level, const char *msg, va_list args);
 
 PHP_INI_BEGIN()
     PHP_INI_ENTRY("ffmpeg.allow_persistent", "0", PHP_INI_ALL, NULL)
@@ -90,6 +91,7 @@ PHP_MINIT_FUNCTION(ffmpeg)
 
     /* register all codecs */
     av_register_all();
+    av_log_set_callback(ffmpeg_errorhandler);
 
     REGISTER_INI_ENTRIES();
     
