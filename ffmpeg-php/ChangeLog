@@ -4,6 +4,7 @@ version 0.x.x (xx/xx/2007)
 
 	Bug Fixes:
 	* ffmpeg-php should compile on macos-x now
+	* failure to find the proper codec is not a fatal error anymore
 
 	New Features:
 	* ffmpeg's logs are mapped to php's warnings and notices (no more stderr pollution)
