@@ -498,8 +498,8 @@ static AVCodecContext* _php_get_decoder_context(ff_movie_context *ffmovie_ctx,
 
        /* open the decoder */
         if (avcodec_open(ffmovie_ctx->codec_ctx[stream_index], decoder) < 0) {
-            zend_error(E_ERROR, "Could not open codec for %s",
-                    _php_get_filename(ffmovie_ctx));
+            zend_error(E_WARNING, "Could not open codec for %s", _php_get_filename(ffmovie_ctx));
+            return NULL;
         }
     }
     return ffmovie_ctx->codec_ctx[stream_index];
