@@ -759,6 +759,7 @@ PHP_FUNCTION(resize)
                 php_error_docref(NULL TSRMLS_CC, E_ERROR,
                         "Frame height must be an even number");
             }
+            /* fallthru */
         case 1:
             /* width arg */
             convert_to_long_ex(argv[0]);
