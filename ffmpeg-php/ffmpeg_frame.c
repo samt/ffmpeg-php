@@ -57,6 +57,9 @@
     ZEND_FETCH_RESOURCE(gd_img, gdImagePtr, ret, -1, "Image", le_gd); \
 }
 
+// Borrowed from gd.c
+#define gdImageBoundsSafeMacro(im, x, y) (!((((y) < (im)->cy1) || ((y) > (im)->cy2)) || (((x) < (im)->cx1) || ((x) > (im)->cx2))))
+
 static int le_gd; // this is only valid after calling 
                   // FFMPEG_PHP_FETCH_IMAGE_RESOURCE() 
 
@@ -391,16 +394,12 @@ static int _php_avframe_to_gd_image(AVFrame *frame, gdImage *dest, int width,
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
 		
-			// FIXME: gdImageBoundsSafe is implemented as a macro in the gd library
-            //        bundled with php and as a function in other gd libraries.
-            //        The macro and the function are incompatible so disable this
-            //        until I can come up with a way to work around the problem.
-			//if (gdImageBoundsSafe(dest, x, y)) {
+			if (gdImageBoundsSafeMacro(dest, x, y)) {
                 /* copy pixel to gdimage buffer zeroing the alpha channel */
                 dest->tpixels[y][x] = src[x] & 0x00ffffff;
-            //} else {
-            //    return -1;
-            //}
+            } else {
+                return -1;
+            }
         }
         src += width;
     }
@@ -419,13 +418,11 @@ static int _php_gd_image_to_avframe(gdImage *src, AVFrame *frame, int width,
 
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-			// FIXME: don't do bounds check until we fix the gd.h 
-            // incompatiblity problem 
-            //if (gdImageBoundsSafe(src, x, y)) {
+            if (gdImageBoundsSafeMacro(src, x, y)) {
                 dest[x] = src->tpixels[y][x];
-            /*} else {
+            } else {
                 return -1;
-            }*/
+            }
         }
         dest += width;
     }
@@ -454,8 +451,7 @@ PHP_FUNCTION(toGDImage)
 
     if (_php_avframe_to_gd_image(ff_frame->av_frame, gd_img,
             ff_frame->width, ff_frame->height)) {
-        // don't error until we fix the gdImageBounds problem with older GD
-        //zend_error(E_ERROR, "failed to convert frame to gd image");
+        zend_error(E_ERROR, "failed to convert frame to gd image");
     }
 }
 /* }}} */
