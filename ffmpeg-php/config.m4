@@ -19,15 +19,13 @@ if test "$PHP_FFMPEG" != "no"; then
     if test -f $i/include/ffmpeg/avcodec.h; then
       AC_MSG_RESULT(...found in $i/include/ffmpeg)
       PHP_ADD_INCLUDE($i/include/ffmpeg)
-      break
     elif test -f $i/include/avcodec.h; then
       AC_MSG_RESULT(...found in $i/include)
       PHP_ADD_INCLUDE($i/include)
-      break
     elif test -f $i/include/libavcodec/avcodec.h; then
       dnl ffmpeg svn revision 12194 and newer put each header in its own dir
       dnl so we have to include them all.
-      AC_MSG_RESULT(...found in $i/include/libav...)
+      AC_MSG_RESULT(...found in $i/include/libav*)
       PHP_ADD_INCLUDE($i/include/libavcodec/)
       PHP_ADD_INCLUDE($i/include/libavformat/)
       PHP_ADD_INCLUDE($i/include/libavutil/)
@@ -35,7 +33,8 @@ if test "$PHP_FFMPEG" != "no"; then
       PHP_ADD_INCLUDE($i/include/libavfilter/)
       PHP_ADD_INCLUDE($i/include/libavdevice/)
     else
-      AC_MSG_ERROR(ffmpeg headers not found. Make sure you've built ffmpeg as shared libs using the --enable-shared option)
+      AC_MSG_RESULT()
+      AC_MSG_ERROR([ffmpeg headers not found. Make sure ffmpeg is compiled as shared libraries using the --enable-shared option])
     fi
   done
 
@@ -43,22 +42,20 @@ if test "$PHP_FFMPEG" != "no"; then
   for i in $PHP_FFMPEG /usr/local /usr ; do
     if test -f $i/lib/libavcodec.so; then
       FFMPEG_LIBDIR=$i/lib
-      break
     fi
     dnl PATCH: 1785450 x86_64 support (Bent Nagstrup Terp)
     if test -f $i/lib64/libavcodec.so; then
       FFMPEG_LIBDIR=$i/lib64
-      break
     fi
     dnl MacOS-X support (Alexey Zakhlestin)
     if test -f $i/lib/libavcodec.dylib; then
       FFMPEG_LIBDIR=$i/lib
-      break
     fi
     done
 
   if test -z "$FFMPEG_LIBDIR"; then
-    AC_MSG_ERROR(ffmpeg share libraries not found. Make sure you've built ffmpeg as shared libs using the --enable-shared option)
+    AC_MSG_RESULT()
+    AC_MSG_ERROR(ffmpeg shared libraries not found. Make sure ffmpeg is compiled as shared libraries using the --enable-shared option)
   else
     dnl For debugging
     AC_MSG_RESULT(...found in $FFMPEG_LIBDIR)
