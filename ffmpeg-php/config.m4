@@ -17,22 +17,27 @@ if test "$PHP_FFMPEG" != "no"; then
   AC_MSG_CHECKING(for ffmpeg headers)
   for i in $PHP_FFMPEG /usr/local /usr ; do
     if test -f $i/include/ffmpeg/avcodec.h; then
-      FFMPEG_DIR=$i
-      FFMPEG_INCDIR=$i/include/ffmpeg
+      AC_MSG_RESULT(...found in $i/include/ffmpeg)
+      PHP_ADD_INCLUDE($i/include/ffmpeg)
       break
     elif test -f $i/include/avcodec.h; then
-      FFMPEG_DIR=$i
-      FFMPEG_INCDIR=$i/include
+      AC_MSG_RESULT(...found in $i/include)
+      PHP_ADD_INCLUDE($i/include)
       break
+    elif test -f $i/include/libavcodec/avcodec.h; then
+      dnl ffmpeg svn revision 12194 and newer put each header in its own dir
+      dnl so we have to include them all.
+      AC_MSG_RESULT(...found in $i/include/libav...)
+      PHP_ADD_INCLUDE($i/include/libavcodec/)
+      PHP_ADD_INCLUDE($i/include/libavformat/)
+      PHP_ADD_INCLUDE($i/include/libavutil/)
+      PHP_ADD_INCLUDE($i/include/libswscale/)
+      PHP_ADD_INCLUDE($i/include/libavfilter/)
+      PHP_ADD_INCLUDE($i/include/libavdevice/)
+    else
+      AC_MSG_ERROR(ffmpeg headers not found. Make sure you've built ffmpeg as shared libs using the --enable-shared option)
     fi
   done
-
-  if test -z "$FFMPEG_DIR"; then
-    AC_MSG_ERROR(ffmpeg headers not found. Make sure you've built ffmpeg as shared libs using the --enable-shared option)
-  else
-    dnl For debugging
-    AC_MSG_RESULT(...found in $FFMPEG_INCDIR)
-  fi
 
   AC_MSG_CHECKING(for ffmpeg libavcodec.so)
   for i in $PHP_FFMPEG /usr/local /usr ; do
@@ -59,13 +64,10 @@ if test "$PHP_FFMPEG" != "no"; then
     AC_MSG_RESULT(...found in $FFMPEG_LIBDIR)
   fi
 
-  dnl FFMPEG_LIBDIR=$FFMPEG_DIR/lib
-
   CFLAGS="$CFLAGS -Wall -fno-strict-aliasing"
 
   PHP_ADD_LIBRARY_WITH_PATH(avcodec, $FFMPEG_LIBDIR, FFMPEG_SHARED_LIBADD)
   PHP_ADD_LIBRARY_WITH_PATH(avformat, $FFMPEG_LIBDIR, FFMPEG_SHARED_LIBADD)
-  PHP_ADD_INCLUDE($FFMPEG_INCDIR)
 
   PHP_NEW_EXTENSION(ffmpeg, ffmpeg-php.c ffmpeg_movie.c ffmpeg_frame.c ffmpeg_animated_gif.c ffmpeg_errorhandler.c, $ext_shared,, \\$(GDLIB_CFLAGS))
   PHP_SUBST(FFMPEG_SHARED_LIBADD)
