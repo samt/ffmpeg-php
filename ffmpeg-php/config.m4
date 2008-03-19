@@ -14,29 +14,48 @@ fi
 dnl Determine path to ffmpeg libs
 if test "$PHP_FFMPEG" != "no"; then
 
+  dnl Default directories to check for ffmpeg headers
+  INC_CHECK_DIRS="/usr/local /usr"
+
+  dnl User has specified using --with=ffmpeg=[dir] a directory where we should
+  dnl look for ffmpeg headers. Prepend this directory to the default dirs so it
+  dnl gets checked first.
+  if test "$PHP_FFMPEG" != "yes"; then
+      INC_CHECK_DIRS="$PHP_FFMPEG $INC_CHECK_DIRS"
+  fi
+
   AC_MSG_CHECKING(for ffmpeg headers)
-  for i in $PHP_FFMPEG /usr/local /usr ; do
+  for i in $INC_CHECK_DIRS ; do
+      AC_MSG_RESULT([Checking $i])
     if test -f $i/include/ffmpeg/avcodec.h; then
-      AC_MSG_RESULT(...found in $i/include/ffmpeg)
       PHP_ADD_INCLUDE($i/include/ffmpeg)
+      FFMPEG_INC_FOUND=$i/include/ffmpeg
+      break
     elif test -f $i/include/avcodec.h; then
-      AC_MSG_RESULT(...found in $i/include)
       PHP_ADD_INCLUDE($i/include)
+      FFMPEG_INC_FOUND=$i/include
+      break
     elif test -f $i/include/libavcodec/avcodec.h; then
       dnl ffmpeg svn revision 12194 and newer put each header in its own dir
       dnl so we have to include them all.
-      AC_MSG_RESULT(...found in $i/include/libav*)
       PHP_ADD_INCLUDE($i/include/libavcodec/)
       PHP_ADD_INCLUDE($i/include/libavformat/)
       PHP_ADD_INCLUDE($i/include/libavutil/)
       PHP_ADD_INCLUDE($i/include/libswscale/)
       PHP_ADD_INCLUDE($i/include/libavfilter/)
       PHP_ADD_INCLUDE($i/include/libavdevice/)
-    else
-      AC_MSG_RESULT()
-      AC_MSG_ERROR([ffmpeg headers not found. Make sure ffmpeg is compiled as shared libraries using the --enable-shared option])
+      FFMPEG_INC_FOUND=$i/include/libav*
+      break
     fi
   done
+
+  if test -z "$FFMPEG_INC_FOUND"; then 
+     AC_MSG_RESULT()
+     AC_MSG_ERROR([ffmpeg headers not found. Make sure ffmpeg is compiled as shared libraries using the --enable-shared option])
+  else
+     AC_MSG_RESULT(...found in $FFMPEG_INC_FOUND)
+  fi
+ 
 
   AC_MSG_CHECKING(for ffmpeg libavcodec.so)
   for i in $PHP_FFMPEG /usr/local /usr ; do
@@ -70,6 +89,5 @@ if test "$PHP_FFMPEG" != "no"; then
   PHP_SUBST(FFMPEG_SHARED_LIBADD)
   AC_DEFINE(HAVE_FFMPEG_PHP,1,[ ])
     
-
 dnl PHP_DEBUG_MACRO(test.dbg)
 fi
