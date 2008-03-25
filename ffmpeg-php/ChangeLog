@@ -1,12 +1,15 @@
 ChangeLog for ffmpeg-php (ffmpeg-php.sourceforge.net)
 
-version 0.5.2 (xx/xx/2007)
+version 0.5.2 (xx/xx/2008)
 
     Bug Fixes:
     * ffmpeg-php should compile on macos-x now
-    * failure to find the proper codec is not a fatal error anymore
+    * Failure to find the proper codec is not a fatal error anymore
+    * Updated build script to deal with new ffmpeg include file layout.
+
     
     New Features:
+    * Added gd image bounds checking.
     * Added config flag to skip the compile-time gd check.
     * ffmpeg's logs are mapped to php's warnings and notices (no more stderr pollution)
 
