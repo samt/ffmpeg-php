@@ -206,7 +206,7 @@ int _php_convert_frame(ff_frame_context *ff_frame, int new_fmt) {
         zend_error(E_ERROR, "Error converting frame");
     }
 
-    // TODO: img_convert is depricated. use swscale and ifdef with img_convert for older
+    // FIXME: img_convert is depricated. use swscale and ifdef with img_convert for older
     // versions of libavcodec/format.
     //sws_scale(img_convert_ctx, src_frame->data, src_frame->linesize,
     //          0, is->video_st->codec->height, pict.data, pict.linesize);
