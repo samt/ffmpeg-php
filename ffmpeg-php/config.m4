@@ -26,7 +26,6 @@ if test "$PHP_FFMPEG" != "no"; then
 
   AC_MSG_CHECKING(for ffmpeg headers)
   for i in $INC_CHECK_DIRS ; do
-      AC_MSG_RESULT([Checking $i])
     if test -f $i/include/ffmpeg/avcodec.h; then
       PHP_ADD_INCLUDE($i/include/ffmpeg)
       FFMPEG_INC_FOUND=$i/include/ffmpeg
