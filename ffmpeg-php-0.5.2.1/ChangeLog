@@ -1,6 +1,11 @@
 ChangeLog for ffmpeg-php (ffmpeg-php.sourceforge.net)
 
-version 0.5.2 (xx/xx/2008)
+version 0.5.2.1 (04/03/2008)
+
+    Bug Fixes:
+    * Minor build fixes and cleanups
+
+version 0.5.2 (04/02/2008)
 
     Bug Fixes:
     * ffmpeg-php should compile on macos-x now
