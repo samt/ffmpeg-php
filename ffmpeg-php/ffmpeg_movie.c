@@ -1214,7 +1214,7 @@ static AVFrame* _php_get_av_frame(ff_movie_context *ffmovie_ctx,
     }
 
     /* read frames looking for wanted_frame */ 
-    while () {
+    while (1) {
         frame = _php_read_av_frame(ffmovie_ctx, decoder_ctx, is_keyframe, pts);
 
         /* hurry up if we're still a ways from the target frame */
