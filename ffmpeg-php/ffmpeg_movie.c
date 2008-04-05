@@ -1132,27 +1132,60 @@ PHP_METHOD(ffmpeg_movie, getVideoBitRate)
 /* }}} */
 
 
-
-/* {{{ _php_get_av_frame()
-   Returns a frame from the movie.
+/* {{{ _php_read_av_frame()
+ Returns the next frame from the movie
  */
-#define GETFRAME_KEYFRAME -1
-#define GETFRAME_NEXTFRAME 0
-static AVFrame* _php_get_av_frame(ff_movie_context *ffmovie_ctx, 
-        int wanted_frame, int *is_keyframe, int64_t *pts)
+static AVFrame* _php_read_av_frame(ff_movie_context *ffmovie_ctx, 
+        AVCodecContext *decoder_ctx, int *is_keyframe, int64_t *pts)
 {
-    AVCodecContext *decoder_ctx = NULL;
+    int video_stream;
     AVPacket packet;
     AVFrame *frame = NULL;
     int got_frame; 
-    int video_stream;
 
     video_stream = _php_get_stream_index(ffmovie_ctx->fmt_ctx, 
             CODEC_TYPE_VIDEO);
     if (video_stream < 0) {
         return NULL;
     }
- 
+
+    frame = avcodec_alloc_frame();
+
+    /* read next frame */ 
+    while (av_read_frame(ffmovie_ctx->fmt_ctx, &packet) >= 0) {
+        if (packet.stream_index == video_stream) {
+        
+            avcodec_decode_video(decoder_ctx, frame, &got_frame,
+                    packet.data, packet.size);
+        
+            if (got_frame) {
+                *is_keyframe = (packet.flags & PKT_FLAG_KEY);
+                *pts = packet.pts;
+                av_free_packet(&packet);
+                return frame;
+            }
+        }
+
+        /* free the packet allocated by av_read_frame */
+        av_free_packet(&packet);
+    }
+
+    av_free(frame);
+    return NULL;
+}
+/* }}} */
+
+/* {{{ _php_get_av_frame()
+   Returns a frame from the movie.
+   */
+#define GETFRAME_KEYFRAME -1
+#define GETFRAME_NEXTFRAME 0
+static AVFrame* _php_get_av_frame(ff_movie_context *ffmovie_ctx, 
+        int wanted_frame, int *is_keyframe, int64_t *pts)
+{
+    AVCodecContext *decoder_ctx = NULL;
+    AVFrame *frame = NULL;
+
     decoder_ctx = _php_get_decoder_context(ffmovie_ctx, CODEC_TYPE_VIDEO);
     if (decoder_ctx == NULL) {
         return NULL;
@@ -1161,7 +1194,7 @@ static AVFrame* _php_get_av_frame(ff_movie_context *ffmovie_ctx,
     /* Rewind to the beginning of the stream if wanted frame already passed */
     if (wanted_frame > 0 && wanted_frame <= ffmovie_ctx->frame_number) {
         if (
-                
+
 #if LIBAVFORMAT_BUILD >=  4619
                 av_seek_frame(ffmovie_ctx->fmt_ctx, -1, 0, 0)
 #else 
@@ -1173,81 +1206,50 @@ static AVFrame* _php_get_av_frame(ff_movie_context *ffmovie_ctx,
             // NOTE: This may mask locking problems in persistent movies.
             _php_open_movie_file(ffmovie_ctx, _php_get_filename(ffmovie_ctx));
         }
- 
+
         /* flush decoder buffers here */
         avcodec_flush_buffers(decoder_ctx);
-        
+
         ffmovie_ctx->frame_number = 0; 
     }
 
-    frame = avcodec_alloc_frame();
-    
     /* read frames looking for wanted_frame */ 
-    while (av_read_frame(ffmovie_ctx->fmt_ctx, &packet) >= 0) {
-       
-		/* hurry up if we're still a ways from the target frame */
+    while () {
+        frame = _php_read_av_frame(ffmovie_ctx, decoder_ctx, is_keyframe, pts);
+
+        /* hurry up if we're still a ways from the target frame */
         if (wanted_frame != GETFRAME_KEYFRAME &&
                 wanted_frame != GETFRAME_NEXTFRAME &&
                 wanted_frame - ffmovie_ctx->frame_number > 
-				decoder_ctx->gop_size + 1) {
-           decoder_ctx->hurry_up = 1;
+                decoder_ctx->gop_size + 1) {
+            decoder_ctx->hurry_up = 1;
         } else {
-           decoder_ctx->hurry_up = 0;
+            decoder_ctx->hurry_up = 0;
+        }
+        ffmovie_ctx->frame_number++; 
+
+        /* 
+         * if caller wants next keyframe then get it and break out of loop.
+         */
+        if (wanted_frame == GETFRAME_KEYFRAME && is_keyframe) {
+            return frame;
         }
 
-        if (packet.stream_index == video_stream) {
-        
-            avcodec_decode_video(decoder_ctx, frame, &got_frame,
-                    packet.data, packet.size);
-        
-            if (got_frame) {
-                ffmovie_ctx->frame_number++; 
-                /* FIXME: 
-                 *        With the addition of the keyframe logic, this loop is 
-                 *        getting a little too tricky. wanted_frame is way 
-                 *        overloaded. Refactor to make clearer what is going on.
-                 */
-
-                /* 
-                 * if caller wants next keyframe then get it and break out of 
-                 * loop.
-                 */
-                if (wanted_frame == GETFRAME_KEYFRAME && 
-                        (packet.flags & PKT_FLAG_KEY)) {
-                    /* free wanted frame packet */
-                    *is_keyframe = 1;
-                    *pts = packet.pts;
-                    av_free_packet(&packet);
-                    goto found_frame; 
-                }
-                
-                if (wanted_frame == GETFRAME_NEXTFRAME || 
-                        ffmovie_ctx->frame_number == wanted_frame) {
-                    /* free wanted frame packet */
-                    *is_keyframe = (packet.flags & PKT_FLAG_KEY);
-                    *pts = packet.pts;
-                    av_free_packet(&packet);
-                    goto found_frame; 
-                }
-            }
+        if (wanted_frame == GETFRAME_NEXTFRAME || 
+                ffmovie_ctx->frame_number == wanted_frame) {
+            return frame;
         }
-
-        /* free the packet allocated by av_read_frame */
-        av_free_packet(&packet);
     }
 
     av_free(frame);
     return NULL;
-
-found_frame:
-    return frame;
 }
 /* }}} */
 
 
 /* {{{ _php_get_ff_frame()
    puts a ff_frame object into the php return_value variable 
-   returns 1 on sucess, 0 on failure.
+   returns 1 on success, 0 on failure.
  */
 static int _php_get_ff_frame(ff_movie_context *ffmovie_ctx, 
         int wanted_frame, INTERNAL_FUNCTION_PARAMETERS) {
