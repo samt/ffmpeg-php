@@ -3,12 +3,8 @@ PHP_ARG_WITH(ffmpeg,for ffmpeg support,
 
 PHP_ARG_ENABLE(skip-gd-check, whether to force gd support in ffmpeg-php, [  --enable-skip-gd-check     skip checks for gd libs and assume they are present.], no, no)
 
-AC_DEFUN([SKIP_GD_CK],[
-    AC_DEFINE(HAVE_LIBGD20, 1, [ ])
-])
-
 if test "$PHP_SKIP_GD_CHECK" != "no"; then
-    SKIP_GD_CK
+    AC_DEFINE(HAVE_LIBGD20, 1, [Define to 1 if the GD functions are available in php])
 fi
 
 dnl Determine path to ffmpeg libs
@@ -78,6 +74,19 @@ if test "$PHP_FFMPEG" != "no"; then
     dnl For debugging
     AC_MSG_RESULT(...found in $FFMPEG_LIBDIR)
   fi
+
+  dnl check if libavcodec contains img_convert
+  dnl if not, that means that libswscale is compiled in
+  AC_MSG_CHECKING(for ffmpeg swscale support)
+  AC_TRY_LINK([#include <ffmpeg/avcodec.h>],
+              [img_convert(0, 0, 0,0,0,0)],
+              enable_ffmpeg_swscale=no,enable_ffmpeg_swscale=yes)
+  AC_MSG_RESULT($enable_ffmpeg_swscale)
+
+  if test "$enable_ffmpeg_swscale" == yes; then
+     AC_DEFINE(HAVE_SWSCALER, 1, [Define to 1 if software scaler is compiled into ffmpeg])
+  fi
+
 
   CFLAGS="$CFLAGS -Wall -fno-strict-aliasing"
 
