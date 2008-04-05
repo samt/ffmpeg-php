@@ -24,7 +24,6 @@ if (php_sapi_name() != 'cgi') {
 printf("ffmpeg-php version string: %s\n", FFMPEG_PHP_VERSION_STRING);
 printf("libavcodec build number: %d\n", LIBAVCODEC_BUILD_NUMBER);
 printf("libavcodec version number: %d\n", LIBAVCODEC_VERSION_NUMBER);
-printf("libavcodec build number: %d\n", LIBAVCODEC_BUILD_NUMBER);
 
 print_class_methods("ffmpeg_movie");
 print_class_methods("ffmpeg_frame");
