@@ -17,7 +17,7 @@ if (!extension_loaded($extension)) {
     dl($extension_soname) or die("Can't load extension $extension_fullname\n");
 }
 
-if (php_sapi_name() != 'cgi') {
+if (php_sapi_name() != 'cli') {
     echo '<pre>';
 }
 
@@ -65,7 +65,7 @@ foreach($movies as $movie) {
     echo "\n--------------------\n\n";
 }
 
-if (php_sapi_name() != 'cgi') {
+if (php_sapi_name() != 'cli') {
     echo '</pre>';
 }
 
