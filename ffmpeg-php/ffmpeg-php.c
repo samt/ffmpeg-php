@@ -132,6 +132,7 @@ PHP_MINFO_FUNCTION(ffmpeg)
     php_info_print_table_start();
     php_info_print_table_header(2, "ffmpeg support (ffmpeg-php)", "enabled");
     php_info_print_table_row(2, "ffmpeg-php version", FFMPEG_PHP_VERSION);
+    php_info_print_table_row(2, "built on", __DATE__ " "  __TIME__);
     php_info_print_table_row(2, "libavcodec version", LIBAVCODEC_IDENT);
     php_info_print_table_row(2, "libavformat version", LIBAVFORMAT_IDENT);
 #if HAVE_LIBGD20
