@@ -49,8 +49,6 @@ if test "$PHP_FFMPEG" != "no"; then
      AC_MSG_ERROR([ffmpeg headers not found. Make sure ffmpeg is compiled as shared libraries using the --enable-shared option])
   else
      AC_MSG_RESULT(...found in $FFMPEG_INC_FOUND)
-     PHP_ADD_LIBRARY_WITH_PATH(avcodec, $FFMPEG_LIBDIR, FFMPEG_SHARED_LIBADD)
-     PHP_ADD_LIBRARY_WITH_PATH(avformat, $FFMPEG_LIBDIR, FFMPEG_SHARED_LIBADD)
   fi
  
 
@@ -68,6 +66,10 @@ if test "$PHP_FFMPEG" != "no"; then
       FFMPEG_LIBDIR=$i/lib
     fi
     done
+
+    PHP_ADD_LIBRARY_WITH_PATH(avcodec, $FFMPEG_LIBDIR, FFMPEG_SHARED_LIBADD)
+    PHP_ADD_LIBRARY_WITH_PATH(avformat, $FFMPEG_LIBDIR, FFMPEG_SHARED_LIBADD)
+
 
   if test -z "$FFMPEG_LIBDIR"; then
     AC_MSG_RESULT()
