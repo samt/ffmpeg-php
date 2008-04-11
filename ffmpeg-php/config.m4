@@ -49,6 +49,8 @@ if test "$PHP_FFMPEG" != "no"; then
      AC_MSG_ERROR([ffmpeg headers not found. Make sure ffmpeg is compiled as shared libraries using the --enable-shared option])
   else
      AC_MSG_RESULT(...found in $FFMPEG_INC_FOUND)
+     PHP_ADD_LIBRARY_WITH_PATH(avcodec, $FFMPEG_LIBDIR, FFMPEG_SHARED_LIBADD)
+     PHP_ADD_LIBRARY_WITH_PATH(avformat, $FFMPEG_LIBDIR, FFMPEG_SHARED_LIBADD)
   fi
  
 
@@ -78,20 +80,22 @@ if test "$PHP_FFMPEG" != "no"; then
   dnl check if libavcodec contains img_convert
   dnl if not, that means that libswscale is compiled in
   AC_MSG_CHECKING(for ffmpeg swscale support)
-  AC_TRY_LINK([#include <ffmpeg/avcodec.h>],
-              [img_convert(0, 0, 0,0,0,0)],
-              enable_ffmpeg_swscale=no,enable_ffmpeg_swscale=yes)
+  SAVED_LIBS=$LIBS
+  LIBS="$LIBS -lavcodec"
+  AC_MSG_RESULT($LIBS)
+  AC_TRY_LINK([ #include <ffmpeg/avcodec.h> ],
+              [ img_convert(0, 0, 0, 0, 0, 0) ],
+              [ enable_ffmpeg_swscale=no ],
+              [ enable_ffmpeg_swscale=yes ] )
   AC_MSG_RESULT($enable_ffmpeg_swscale)
+  LIBS=$SAVED_LIBS
 
   if test "$enable_ffmpeg_swscale" == yes; then
      AC_DEFINE(HAVE_SWSCALER, 1, [Define to 1 if software scaler is compiled into ffmpeg])
+     PHP_ADD_LIBRARY_WITH_PATH(swscale, $FFMPEG_LIBDIR, FFMPEG_SHARED_LIBADD)
   fi
 
-
   CFLAGS="$CFLAGS -Wall -fno-strict-aliasing"
-
-  PHP_ADD_LIBRARY_WITH_PATH(avcodec, $FFMPEG_LIBDIR, FFMPEG_SHARED_LIBADD)
-  PHP_ADD_LIBRARY_WITH_PATH(avformat, $FFMPEG_LIBDIR, FFMPEG_SHARED_LIBADD)
 
   PHP_NEW_EXTENSION(ffmpeg, ffmpeg-php.c ffmpeg_movie.c ffmpeg_frame.c ffmpeg_animated_gif.c ffmpeg_errorhandler.c, $ext_shared,, \\$(GDLIB_CFLAGS))
   PHP_SUBST(FFMPEG_SHARED_LIBADD)
