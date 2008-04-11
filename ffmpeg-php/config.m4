@@ -84,7 +84,6 @@ if test "$PHP_FFMPEG" != "no"; then
   AC_MSG_CHECKING(for ffmpeg swscale support)
   SAVED_LIBS=$LIBS
   LIBS="$LIBS -lavcodec"
-  AC_MSG_RESULT($LIBS)
   AC_TRY_LINK([ #include <ffmpeg/avcodec.h> ],
               [ img_convert(0, 0, 0, 0, 0, 0) ],
               [ enable_ffmpeg_swscale=no ],
