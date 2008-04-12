@@ -4,7 +4,7 @@ ffmpeg getID3Info() test
 <?php extension_loaded('ffmpeg') or die("ffmpeg extension not loaded"); ?>
 --FILE--
 <?php
-$mov = new ffmpeg_movie(dirname(__FILE__) . '/test_media/Ballad of the Sneak.mp3');
+$mov = new ffmpeg_movie(dirname(__FILE__) . '/test_media/16Hz-20kHz-Exp-1f-5sec.mp3');
 printf("ffmpeg getTitle(): %s\n", $mov->getTitle());
 printf("ffmpeg getArtist(): %s\n", $mov->getArtist());
 printf("ffmpeg getAlbum(): %s\n", $mov->getAlbum());
@@ -14,10 +14,10 @@ printf("ffmpeg getYear(): %s\n", $mov->getYear());
 
 ?>
 --EXPECT--
-ffmpeg getTitle(): Ballad of the Sneak
-ffmpeg getArtist(): DaVinci's Notebook
-ffmpeg getAlbum(): Strong Bad Sings
-ffmpeg getGenre(): Ballad
-ffmpeg getTrackNumber(): 1
-ffmpeg getYear(): 2004
+ffmpeg getTitle(): Test mp3
+ffmpeg getArtist(): ffmpeg-php
+ffmpeg getAlbum(): ffmpeg-php's greatest hits
+ffmpeg getGenre(): (116)
+ffmpeg getTrackNumber(): 3
+ffmpeg getYear(): 2008
 
