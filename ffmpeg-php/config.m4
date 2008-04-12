@@ -39,7 +39,7 @@ if test "$PHP_FFMPEG" != "no"; then
       PHP_ADD_INCLUDE($i/include/libswscale/)
       PHP_ADD_INCLUDE($i/include/libavfilter/)
       PHP_ADD_INCLUDE($i/include/libavdevice/)
-      FFMPEG_INC_FOUND=$i/include/libav*
+      FFMPEG_INC_FOUND=$i/include/libavcodec
       break
     fi
   done
@@ -84,12 +84,16 @@ if test "$PHP_FFMPEG" != "no"; then
   AC_MSG_CHECKING(for ffmpeg swscale support)
   SAVED_LIBS=$LIBS
   LIBS="$LIBS -lavcodec"
-  AC_TRY_LINK([ #include <ffmpeg/avcodec.h> ],
+  SAVED_CFLAGS=$CFLAGS
+  CFLAGS="$CFLAGS -I $INCLUDES"
+
+  AC_TRY_LINK([ #include <avcodec.h> ],
               [ img_convert(0, 0, 0, 0, 0, 0) ],
               [ enable_ffmpeg_swscale=no ],
               [ enable_ffmpeg_swscale=yes ] )
   AC_MSG_RESULT($enable_ffmpeg_swscale)
   LIBS=$SAVED_LIBS
+  CFLAGS=$SAVED_CFLAGS
 
   if test "$enable_ffmpeg_swscale" == yes; then
      AC_DEFINE(HAVE_SWSCALER, 1, [Define to 1 if software scaler is compiled into ffmpeg])
