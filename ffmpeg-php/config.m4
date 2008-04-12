@@ -98,6 +98,9 @@ if test "$PHP_FFMPEG" != "no"; then
   if test "$enable_ffmpeg_swscale" == yes; then
      AC_DEFINE(HAVE_SWSCALER, 1, [Define to 1 if software scaler is compiled into ffmpeg])
      PHP_ADD_LIBRARY_WITH_PATH(swscale, $FFMPEG_LIBDIR, FFMPEG_SHARED_LIBADD)
+  else
+      dnl Ignore deprecation warnings that using img_convert generates these days
+      CFLAGS="$CFLAGS -Wno-deprecated-declarations"
   fi
 
   CFLAGS="$CFLAGS -Wall -fno-strict-aliasing"
