@@ -15,9 +15,8 @@ printf("ffmpeg getYear(): %s\n", $mov->getYear());
 ?>
 --EXPECT--
 ffmpeg getTitle(): Test mp3
-ffmpeg getArtist(): ffmpeg-php
-ffmpeg getAlbum(): ffmpeg-php's greatest hits
-ffmpeg getGenre(): (116)
+ffmpeg getArtist(): Alexander Thomas
+ffmpeg getAlbum(): MP3 test files (http://www.dr-lex.be/software/testsounds.html#Tones)
+ffmpeg getGenre(): (37)
 ffmpeg getTrackNumber(): 3
 ffmpeg getYear(): 2008
-
