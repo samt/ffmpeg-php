@@ -34,6 +34,13 @@
 #include "php_globals.h"
 #include "ext/standard/info.h"
 
+#include <avcodec.h>
+#include <avformat.h>
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "php_ffmpeg.h"
 
 #include "ffmpeg_frame.h"
@@ -61,6 +68,13 @@
 #define GET_CODEC_PTR(codec) &codec
 #endif
 
+typedef struct {
+    AVFormatContext *fmt_ctx;
+    AVCodecContext *codec_ctx[MAX_STREAMS];
+    int64_t last_pts;
+    int frame_number;
+    long rsrc_id;
+} ff_movie_context;
 
 static zend_class_entry *ffmpeg_movie_class_entry_ptr;
 zend_class_entry ffmpeg_movie_class_entry;
@@ -193,7 +207,7 @@ static ff_movie_context* _php_alloc_ffmovie_ctx(int persistent)
 /* }}} */
 
 
-/* {{{ _php_open_movie_file()
+/* {{{ _php_print_av_error()
  */
 /*
 static void _php_print_av_error(const char *filename, int err) 
@@ -239,16 +253,13 @@ static int _php_open_movie_file(ff_movie_context *ffmovie_ctx,
     }
     
     /* open the file with generic libav function */
-    if (av_open_input_file(&(ffmovie_ctx->fmt_ctx), filename, NULL, 0, NULL)) {
-        return -1;
+    if (av_open_input_file(&ffmovie_ctx->fmt_ctx, filename, NULL, 0, NULL) < 0) {
+        return 1;
     }
-    
-    /* If not enough info to get the stream parameters, we decode the
-       first frames to get it. */
-    if (av_find_stream_info(ffmovie_ctx->fmt_ctx)) {
-        /* Don't fail here since this is not a problem for formats like .mov */
-        /*zend_error(E_WARNING, "Can't find codec params for %s", filename); */
-    }
+
+    /* decode the first frames to get the stream parameters. */
+    av_find_stream_info(ffmovie_ctx->fmt_ctx);
+
     return 0;
 }
 /* }}} */
@@ -1286,8 +1297,8 @@ static int _php_get_ff_frame(ff_movie_context *ffmovie_ctx,
         /* FIXME: temporary hack until I figure out how to pass new buffers 
          *        to the decoder 
          */
-        img_copy((AVPicture*)ff_frame->av_frame, 
-                (AVPicture *)frame, ff_frame->pixel_format, 
+        av_picture_copy((AVPicture*)ff_frame->av_frame, 
+                        (AVPicture*)frame, ff_frame->pixel_format,
                 ff_frame->width, ff_frame->height);
 
         return 1;
