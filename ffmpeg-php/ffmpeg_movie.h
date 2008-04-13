@@ -31,10 +31,6 @@
 
 #ifndef FFMPEG_MOVIE_H
 #define FFMPEG_MOVIE_H
-
-#include <avcodec.h>
-#include <avformat.h>
-
 /* movie constructor */
 PHP_METHOD(ffmpeg_movie, __construct);
 
@@ -68,16 +64,7 @@ PHP_METHOD(ffmpeg_movie, getAudioBitRate);
 PHP_METHOD(ffmpeg_movie, getVideoBitRate);
 PHP_METHOD(ffmpeg_movie, getPixelAspectRatio);
 
-typedef struct {
-    AVFormatContext *fmt_ctx;
-    AVCodecContext *codec_ctx[MAX_STREAMS];
-    int64_t last_pts;
-    int frame_number;
-    long rsrc_id;
-} ff_movie_context;
-
 #endif // FFMPEG_MOVIE_H
-
 
 /*
  * Local variables:
