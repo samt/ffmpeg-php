@@ -36,6 +36,8 @@
 #include "php.h"
 #include <avcodec.h>
 
+/* {{{ ffmpeg_errorhandler()
+ */
 void ffmpeg_errorhandler(void *ptr, int level, const char *msg, va_list args)
 {
 	int php_level;
@@ -55,3 +57,13 @@ void ffmpeg_errorhandler(void *ptr, int level, const char *msg, va_list args)
 
 	php_verror("", "", php_level, msg, args TSRMLS_CC);
 }
+/* }}} */
+
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: noet sw=4 ts=4
+ * vim<600: noet sw=4 ts=4
+ */
