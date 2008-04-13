@@ -1,5 +1,13 @@
 ChangeLog for ffmpeg-php (ffmpeg-php.sourceforge.net)
 
+version 0.5.3-svn
+    Bug Fixes:
+    * Added check to ensure that gd loads before ffmpeg-php if both are
+      compiled as extensions.
+    * Replaced large mp3 test file with smaller sample to avoid copyright
+      issues and reduce package size.
+    * Convert from deprecated img_* functions to swscale
+
 version 0.5.2.1 (04/03/2008)
 
     Bug Fixes:
