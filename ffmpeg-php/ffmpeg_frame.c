@@ -38,15 +38,22 @@
 #include "php_globals.h"
 #include "ext/standard/info.h"
 
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#ifdef HAVE_SWSCALER
+#include <swscale.h>
+#endif
 
 #include "php_ffmpeg.h"
 
 #include "ffmpeg_frame.h"
+#include "ffmpeg_tools.h"
 
 /* 
    include gd header from local include dir. This is a copy of gd.h that is 
-   distributed with php-4.3.9. It is distributed along with ffmpeg-php to
+   distributed with php-5.2.5. It is distributed along with ffmpeg-php to
    allow ffmpeg-php to be built without access to the php sources
  */
 #if HAVE_LIBGD20
@@ -152,7 +159,7 @@ static void _php_free_av_frame(AVFrame *av_frame)
         av_free(av_frame);
     }
 }
-
+/* }}} */
 
 /* {{{ _php_free_ffmpeg_frame()
  */
@@ -181,41 +188,41 @@ void register_ffmpeg_frame_class(int module_number)
     ffmpeg_frame_class_entry_ptr = 
         zend_register_internal_class(&ffmpeg_frame_class_entry TSRMLS_CC);
 }
+/* }}} */
 
 
 /* {{{ _php_convert_frame()
- */
-int _php_convert_frame(ff_frame_context *ff_frame, int new_fmt) {
-    AVFrame *new_fmt_frame;
+*/
+int _php_convert_frame(ff_frame_context *ff_frame_ctx, int new_fmt) {
+    AVFrame *src_frame;
+    AVFrame *dest_frame;
+    int result = 0;
 
-    if (!ff_frame->av_frame) {
+    if (!ff_frame_ctx->av_frame) {
         return -1;
     }
 
-    if (ff_frame->pixel_format == new_fmt) {
+    if (ff_frame_ctx->pixel_format == new_fmt) {
         return 0;
     }
 
-    new_fmt_frame = avcodec_alloc_frame();
-    avpicture_alloc((AVPicture*)new_fmt_frame, new_fmt, ff_frame->width,
-                            ff_frame->height);
-    if (img_convert((AVPicture*)new_fmt_frame, new_fmt, 
-                (AVPicture *)ff_frame->av_frame, 
-                ff_frame->pixel_format, ff_frame->width, 
-                ff_frame->height) < 0) {
+    src_frame = ff_frame_ctx->av_frame;
+
+    dest_frame = avcodec_alloc_frame();
+    avpicture_alloc((AVPicture*)dest_frame, new_fmt, ff_frame_ctx->width,
+            ff_frame_ctx->height);
+
+    if (ffmpeg_img_convert((AVPicture*)dest_frame, new_fmt, 
+                (AVPicture *)src_frame, 
+                ff_frame_ctx->pixel_format, ff_frame_ctx->width, 
+                ff_frame_ctx->height) < 0) {
         zend_error(E_ERROR, "Error converting frame");
     }
+    _php_free_av_frame(src_frame);
 
-    // FIXME: img_convert is depricated. use swscale and ifdef with img_convert for older
-    // versions of libavcodec/format.
-    //sws_scale(img_convert_ctx, src_frame->data, src_frame->linesize,
-    //          0, is->video_st->codec->height, pict.data, pict.linesize);
-
-    _php_free_av_frame(ff_frame->av_frame);
-
-    ff_frame->av_frame = new_fmt_frame;
-    ff_frame->pixel_format = new_fmt;
-    return 0;
+    ff_frame_ctx->av_frame = dest_frame;
+    ff_frame_ctx->pixel_format = new_fmt;
+    return result;
 }
 /* }}} */
 
@@ -257,7 +264,7 @@ static int _php_crop_frame(ff_frame_context *ff_frame,
     avpicture_alloc((AVPicture*)cropped_frame, ff_frame->pixel_format,
             cropped_width, cropped_height);
     
-    img_copy((AVPicture*)cropped_frame, 
+    av_picture_copy((AVPicture*)cropped_frame, 
                 (AVPicture *)&crop_temp, ff_frame->pixel_format, 
                 cropped_width, cropped_height);
 
@@ -278,9 +285,8 @@ int _php_resample_frame(ff_frame_context *ff_frame,
         int wanted_width, int wanted_height, int crop_top, int crop_bottom,
         int crop_left, int crop_right)
 {
-    AVFrame *resampled_frame;
-    ImgReSampleContext *img_resample_ctx = NULL;
- 
+    AVFrame *resampled_frame = NULL;
+
     if (!ff_frame->av_frame) {
         return -1;
     }
@@ -294,36 +300,29 @@ int _php_resample_frame(ff_frame_context *ff_frame,
             (!crop_left && !crop_right && !crop_top && !crop_bottom)) {
         return 0;
     }
-    
+ 
     /* just crop if wanted dimensions - crop bands = same width/height */
     if (wanted_width == ff_frame->width - (crop_left + crop_right) && 
             wanted_height == ff_frame->height - (crop_left + crop_right)) {
         _php_crop_frame(ff_frame, crop_top, crop_bottom, crop_left, crop_right);
         return 0;
     } 
-    
-    /* convert to PIX_FMT_YUV420P required for resampling */
-    _php_convert_frame(ff_frame, PIX_FMT_YUV420P);
-
-    img_resample_ctx = img_resample_full_init(
-            wanted_width, wanted_height,
-            ff_frame->width, ff_frame->height,
-            crop_top, crop_bottom, crop_left, crop_right,
-            0, 0, 0, 0);
-    if (!img_resample_ctx) {
-        return -1;
-    }
-
+ 
     resampled_frame = avcodec_alloc_frame();
     avpicture_alloc((AVPicture*)resampled_frame, PIX_FMT_YUV420P, 
             wanted_width, wanted_height);
 
-    img_resample(img_resample_ctx, (AVPicture*)resampled_frame, 
-            (AVPicture*)ff_frame->av_frame);
+    /* convert to PIX_FMT_YUV420P required for resampling */
+    /* FIXME: Is this still needed when using swscale? */
+    _php_convert_frame(ff_frame, PIX_FMT_YUV420P);
 
+// TODO: need to implement cropping
+    ffmpeg_img_resample(
+            (AVPicture*)ff_frame->av_frame, ff_frame->width, ff_frame->height, 
+            (AVPicture*)resampled_frame, wanted_width, wanted_height,
+            0, 0, 0, 0);
+   
     _php_free_av_frame(ff_frame->av_frame);
-
-    img_resample_close(img_resample_ctx);
 
     ff_frame->av_frame = resampled_frame;
     ff_frame->width = wanted_width;
