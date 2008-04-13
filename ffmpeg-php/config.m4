@@ -105,7 +105,9 @@ if test "$PHP_FFMPEG" != "no"; then
 
   CFLAGS="$CFLAGS -Wall -fno-strict-aliasing"
 
-  PHP_NEW_EXTENSION(ffmpeg, ffmpeg-php.c ffmpeg_movie.c ffmpeg_frame.c ffmpeg_animated_gif.c ffmpeg_errorhandler.c, $ext_shared,, \\$(GDLIB_CFLAGS))
+  PHP_NEW_EXTENSION(ffmpeg, ffmpeg-php.c ffmpeg_movie.c ffmpeg_frame.c ffmpeg_animated_gif.c ffmpeg_errorhandler.c ffmpeg_tools.c, $ext_shared,, \\$(GDLIB_CFLAGS))
+  PHP_ADD_EXTENSION_DEP(ffmpeg, gd)
+
   PHP_SUBST(FFMPEG_SHARED_LIBADD)
   AC_DEFINE(HAVE_FFMPEG_PHP,1,[ ])
     
