@@ -39,6 +39,10 @@
 #include <avcodec.h>
 #include <avformat.h>
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 PHP_FUNCTION(ffmpeg_frame);
 PHP_FUNCTION(getWidth);
 PHP_FUNCTION(getHeight);
@@ -82,7 +86,6 @@ int _php_resample_frame(ff_frame_context *ff_frame,
 }\
 
 #endif // FFMPEG_FRAME_H
-
 
 /*
  * Local variables:
