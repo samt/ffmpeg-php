@@ -193,26 +193,26 @@ void register_ffmpeg_frame_class(int module_number)
 
 /* {{{ _php_convert_frame()
 */
-int _php_convert_frame(ff_frame_context *ff_frame_ctx, int new_fmt) {
+int _php_convert_frame(ff_frame_context *ff_frame_ctx, int dst_fmt) {
     AVFrame *src_frame;
-    AVFrame *dest_frame;
+    AVFrame *dst_frame;
     int result = 0;
 
     if (!ff_frame_ctx->av_frame) {
         return -1;
     }
 
-    if (ff_frame_ctx->pixel_format == new_fmt) {
+    if (ff_frame_ctx->pixel_format == dst_fmt) {
         return 0;
     }
 
     src_frame = ff_frame_ctx->av_frame;
 
-    dest_frame = avcodec_alloc_frame();
-    avpicture_alloc((AVPicture*)dest_frame, new_fmt, ff_frame_ctx->width,
+    dst_frame = avcodec_alloc_frame();
+    avpicture_alloc((AVPicture*)dst_frame, dst_fmt, ff_frame_ctx->width,
             ff_frame_ctx->height);
 
-    if (ffmpeg_img_convert((AVPicture*)dest_frame, new_fmt, 
+    if (ffmpeg_img_convert((AVPicture*)dst_frame, dst_fmt, 
                 (AVPicture *)src_frame, 
                 ff_frame_ctx->pixel_format, ff_frame_ctx->width, 
                 ff_frame_ctx->height) < 0) {
@@ -220,8 +220,8 @@ int _php_convert_frame(ff_frame_context *ff_frame_ctx, int new_fmt) {
     }
     _php_free_av_frame(src_frame);
 
-    ff_frame_ctx->av_frame = dest_frame;
-    ff_frame_ctx->pixel_format = new_fmt;
+    ff_frame_ctx->av_frame = dst_frame;
+    ff_frame_ctx->pixel_format = dst_fmt;
     return result;
 }
 /* }}} */

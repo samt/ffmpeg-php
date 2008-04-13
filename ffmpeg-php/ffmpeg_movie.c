@@ -405,7 +405,7 @@ static void _php_free_ffmpeg_movie(zend_rsrc_list_entry *rsrc TSRMLS_DC)
 
     if (ffmovie_ctx->codec_ctx) {
         for (i = 0; i < MAX_STREAMS; i++) {
-            if(ffmovie_ctx->codec_ctx[i]) {
+            if (ffmovie_ctx->codec_ctx[i]) {
                 avcodec_close(ffmovie_ctx->codec_ctx[i]);
             }
             ffmovie_ctx->codec_ctx[i] = NULL;
@@ -429,7 +429,7 @@ static void _php_free_ffmpeg_pmovie(zend_rsrc_list_entry *rsrc TSRMLS_DC)
     
     if (ffmovie_ctx->codec_ctx) {
         for (i = 0; i < MAX_STREAMS; i++) {
-            if(ffmovie_ctx->codec_ctx[i]) {
+            if (ffmovie_ctx->codec_ctx[i]) {
                 avcodec_close(ffmovie_ctx->codec_ctx[i]);
             }
             ffmovie_ctx->codec_ctx[i] = NULL;
@@ -673,8 +673,8 @@ static float _php_get_framerate(ff_movie_context *ffmovie_ctx)
     }
 
 #if LIBAVCODEC_BUILD > 4753 
-    if(GET_CODEC_FIELD(st->codec, codec_type) == CODEC_TYPE_VIDEO){
-        if(st->r_frame_rate.den && st->r_frame_rate.num) {
+    if (GET_CODEC_FIELD(st->codec, codec_type) == CODEC_TYPE_VIDEO){
+        if (st->r_frame_rate.den && st->r_frame_rate.num) {
             rate = av_q2d(st->r_frame_rate);
         } else {
             rate = 1 / av_q2d(GET_CODEC_FIELD(st->codec, time_base));
