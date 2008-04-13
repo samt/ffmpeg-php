@@ -42,6 +42,10 @@
 #include <avcodec.h>
 #include <avformat.h>
 
+#if HAVE_SWSCALER
+#include <swscale.h>
+#endif
+
 #include "php_ini.h"
 #include "php_globals.h"
 #include "ext/standard/info.h"
@@ -101,6 +105,8 @@ PHP_MINIT_FUNCTION(ffmpeg)
 
     REGISTER_STRING_CONSTANT("FFMPEG_PHP_VERSION_STRING", 
 		    FFMPEG_PHP_VERSION, CONST_CS | CONST_PERSISTENT);
+    REGISTER_STRING_CONSTANT("FFMPEG_PHP_BUILD_DATE_STRING", 
+		    __DATE__ " " __TIME__, CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("LIBAVCODEC_VERSION_NUMBER", 
 		    avcodec_version(), CONST_CS | CONST_PERSISTENT);
     REGISTER_LONG_CONSTANT("LIBAVCODEC_BUILD_NUMBER", 
@@ -130,16 +136,21 @@ PHP_MSHUTDOWN_FUNCTION(ffmpeg)
 PHP_MINFO_FUNCTION(ffmpeg)
 {
     php_info_print_table_start();
-    php_info_print_table_header(2, "ffmpeg support (ffmpeg-php)", "enabled");
+//    php_info_print_table_header(2, "ffmpeg-php", "enabled");
     php_info_print_table_row(2, "ffmpeg-php version", FFMPEG_PHP_VERSION);
-    php_info_print_table_row(2, "built on", __DATE__ " "  __TIME__);
-    php_info_print_table_row(2, "libavcodec version", LIBAVCODEC_IDENT);
-    php_info_print_table_row(2, "libavformat version", LIBAVFORMAT_IDENT);
+    php_info_print_table_row(2, "ffmpeg-php built on", __DATE__ " "  __TIME__);
 #if HAVE_LIBGD20
     php_info_print_table_row(2, "ffmpeg-php gd support ", "enabled");
 #else
     php_info_print_table_row(2, "ffmpeg-php gd support ", "disabled");
 #endif // HAVE_LIBGD20
+    php_info_print_table_row(2, "ffmpeg libavcodec version", LIBAVCODEC_IDENT);
+    php_info_print_table_row(2, "ffmpeg libavformat version", LIBAVFORMAT_IDENT);
+#if HAVE_SWSCALER
+    php_info_print_table_row(2, "ffmpeg swscaler version", LIBSWSCALE_IDENT);
+#else 
+    php_info_print_table_row(2, "ffmpeg swscaler", "disabled");
+#endif
     php_info_print_table_end();
 
     DISPLAY_INI_ENTRIES();
