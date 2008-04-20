@@ -17,7 +17,6 @@ for($i = 1; $i <= $framecount + 1; $i++) {
     if ($frame == false) {
         break;
     }
-    $frame->resize(96, 120);
     $image = $frame->toGDImage();
     imagepng($image, $img);
     printf("ffmpeg getFrameResampled($i): md5 = %s\n", md5(file_get_contents($img)));

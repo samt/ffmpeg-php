@@ -18,7 +18,7 @@ for($i = 1; $i <= $framecount; $i++) {
     imagepng($image, $img);
     printf("ffmpeg getFramesForward($i): md5 = %s\n", md5(file_get_contents($img)));
     imagedestroy($image);
-//    unlink($img);
+    unlink($img);
 }
 ?>
 --EXPECT--
