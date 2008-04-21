@@ -42,10 +42,6 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_SWSCALER
-#include <swscale.h>
-#endif
-
 #include "php_ffmpeg.h"
 
 #include "ffmpeg_frame.h"
