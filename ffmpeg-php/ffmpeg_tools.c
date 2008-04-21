@@ -57,7 +57,11 @@ int ffmpeg_img_convert(AVPicture *dst, int dst_pix_fmt,
             src, src_pix_fmt, src_width, src_height);
 #else // Do swscale convert
     int result = 0;
-    struct SwsContext *sws_ctx;
+    struct SwsContext *sws_ctx = NULL;
+
+    if (src_pix_fmt == dst_pix_fmt) {
+        return 0;
+    }
 
     // TODO: Try to get cached sws_context first
 
