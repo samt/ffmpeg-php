@@ -202,26 +202,27 @@ int _php_convert_frame(ff_frame_context *ff_frame_ctx, int dst_fmt) {
         return -1;
     }
 
-    if (ff_frame_ctx->pixel_format == dst_fmt) {
-        return 0;
-    }
-
     src_frame = ff_frame_ctx->av_frame;
 
     dst_frame = avcodec_alloc_frame();
     avpicture_alloc((AVPicture*)dst_frame, dst_fmt, ff_frame_ctx->width,
             ff_frame_ctx->height);
 
-    if (ffmpeg_img_convert((AVPicture*)dst_frame, dst_fmt, 
+    result = ffmpeg_img_convert((AVPicture*)dst_frame, dst_fmt, 
                 (AVPicture *)src_frame, 
                 ff_frame_ctx->pixel_format, ff_frame_ctx->width, 
-                ff_frame_ctx->height) < 0) {
+                ff_frame_ctx->height);
+
+    if (result) {
         zend_error(E_ERROR, "Error converting frame");
+        goto fail;
     }
-    _php_free_av_frame(src_frame);
 
     ff_frame_ctx->av_frame = dst_frame;
     ff_frame_ctx->pixel_format = dst_fmt;
+
+fail:
+    _php_free_av_frame(src_frame);
     return result;
 }
 /* }}} */
