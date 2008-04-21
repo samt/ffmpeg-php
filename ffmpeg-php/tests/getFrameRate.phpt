@@ -4,8 +4,8 @@ ffmpeg getFrameRate test
 <?php extension_loaded('ffmpeg') or die("ffmpeg extension not loaded\n"); ?>
 --FILE--
 <?php
-$mov = new ffmpeg_movie(dirname(__FILE__) . '/test_media/test.avi');
+$mov = new ffmpeg_movie(dirname(__FILE__) . '/test_media/robot.avi');
 printf("ffmpeg getFrameRate(): %0.2f\n", $mov->getFrameRate());
 ?>
 --EXPECT--
-ffmpeg getFrameRate(): 24.00
+ffmpeg getFrameRate(): 25.00

@@ -9,7 +9,7 @@ function_exists("imagecreatetruecolor") or die("skip function imagecreatetruecol
 --FILE--
 <?php
 $frame = 73;
-$mov = new ffmpeg_movie(dirname(__FILE__) . '/test_media/test.avi');
+$mov = new ffmpeg_movie(dirname(__FILE__) . '/test_media/robot.avi');
 $img = sprintf("%s/test-%04d.png", dirname(__FILE__), $frame);
 
 $ff_frame = $mov->getFrame($frame);
@@ -27,4 +27,4 @@ if ($ff_frame) {
 }
 ?>
 --EXPECT--
-ffmpeg getFrame(): md5 = cc36d30fb5b269146802e740ce4ab239
+ffmpeg getFrame(): md5 = 8c9cbc1183504e1d1fee262e83775e01

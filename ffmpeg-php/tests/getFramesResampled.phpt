@@ -8,7 +8,7 @@ function_exists("imagecreatetruecolor") or die("skip function imagecreatetruecol
 ?>
 --FILE--
 <?php
-$mov = new ffmpeg_movie(dirname(__FILE__) . '/test_media/test.avi');
+$mov = new ffmpeg_movie(dirname(__FILE__) . '/test_media/robot.avi');
 
 $framecount = $mov->getFrameCount();
 for($i = 1; $i <= $framecount; $i++) {

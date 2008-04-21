@@ -22,7 +22,7 @@ function print_image_md5($gd_image) {
 }
 
 $framenumber = 73;
-$mov = new ffmpeg_movie(dirname(__FILE__) . '/test_media/test.avi');
+$mov = new ffmpeg_movie(dirname(__FILE__) . '/test_media/robot.avi');
 $img = sprintf("%s/test-%04d.png", dirname(__FILE__), $framenumber);
 
 /* cropping as part of resize */
