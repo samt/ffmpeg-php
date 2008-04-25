@@ -1,7 +1,7 @@
 REQUIREMENTS
 ============
 
-ffmpeg-0.4.9pre1 or higher built with the --enable-shared option (ffmpeg cvs recommended)
+ffmpeg-0.4.9pre1 or higher built with the --enable-shared option and without the --enable-swscale option (ffmpeg svn recommended)
 php-4.3.x or higher 
 gd-2.0.x or higher or the version of GD bundled with PHP
 
