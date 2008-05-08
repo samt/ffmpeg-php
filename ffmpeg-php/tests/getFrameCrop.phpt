@@ -15,7 +15,7 @@ function print_image_md5($gd_image) {
         imagepng($gd_image, $img);
         // generate md5 of file
         printf("%s\n", md5(file_get_contents($img)));
-        unlink($img);
+ //       unlink($img);
     } else {
         printf("failed\n");
     }
@@ -24,15 +24,6 @@ function print_image_md5($gd_image) {
 $framenumber = 73;
 $mov = new ffmpeg_movie(dirname(__FILE__) . '/test_media/robot.avi');
 $img = sprintf("%s/test-%04d.png", dirname(__FILE__), $framenumber);
-
-/* cropping as part of resize */
-$frame = $mov->getFrame($framenumber);
-$frame->resize(190, 240, 10, 10, 10, 10);
-$gd_image = $frame->toGDImage();
-print('ffmpeg resize and crop: md5 = ');
-print_image_md5($gd_image);
-imagedestroy($gd_image);
-$framenumber++;
 
 /* cropping without resize */
 $frame = $mov->getFrame($framenumber);
@@ -43,5 +34,4 @@ print_image_md5($gd_image);
 imagedestroy($gd_image);
 ?>
 --EXPECT--
-ffmpeg resize and crop: md5 = 01e7e90b4a723f8c34f42fb8cc8d8c0f
 ffmpeg crop: md5 = d3973f39a33e89e53b03d9707c392cb2
