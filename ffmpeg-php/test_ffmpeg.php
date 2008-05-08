@@ -47,6 +47,7 @@ foreach($movies as $movie) {
     printf("get bit rate = %d\n", $mov->getBitRate());
     printf("has audio = %s\n", $mov->hasAudio() == 0 ? 'No' : 'Yes');
     if ($mov->hasAudio()) {
+        printf("get audio stream id= %s\n", $mov->getAudioStreamId());
         printf("get audio codec = %s\n", $mov->getAudioCodec());
         printf("get audio bit rate = %d\n", $mov->getAudioBitRate());
         printf("get audio sample rate = %d \n", $mov->getAudioSampleRate());
@@ -56,6 +57,7 @@ foreach($movies as $movie) {
     if ($mov->hasVideo()) {
         printf("frame height = %d pixels\n", $mov->getFrameHeight());
         printf("frame width = %d pixels\n", $mov->getFrameWidth());
+        printf("get video stream id= %s\n", $mov->getVideoStreamId());
         printf("get video codec = %s\n", $mov->getVideoCodec());
         printf("get video bit rate = %d\n", $mov->getVideoBitRate());
         printf("get pixel format = %s\n", $mov->getPixelFormat());

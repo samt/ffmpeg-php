@@ -115,6 +115,8 @@ zend_function_entry ffmpeg_movie_class_methods[] = {
     PHP_MALIAS(ffmpeg_movie, getframe,            getFrame,            NULL, 0)
     PHP_MALIAS(ffmpeg_movie, getvideocodec,       getVideoCodec,       NULL, 0)
     PHP_MALIAS(ffmpeg_movie, getaudiocodec,       getAudioCodec,       NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getvideostreamid,    getVideoStreamId,    NULL, 0)
+    PHP_MALIAS(ffmpeg_movie, getaudiostreamid,    getAudioStreamId,    NULL, 0)
     PHP_MALIAS(ffmpeg_movie, getaudiochannels,    getAudioChannels,    NULL, 0)
     PHP_MALIAS(ffmpeg_movie, getaudiosamplerate,  getAudioSampleRate,  NULL, 0)
     PHP_MALIAS(ffmpeg_movie, getaudiobitrate,     getAudioBitRate,     NULL, 0)
@@ -1014,6 +1016,50 @@ PHP_METHOD(ffmpeg_movie, getAudioCodec)
 }
 /* }}} */
 
+
+/* {{{ proto int getVideoStreamId()
+ */
+PHP_METHOD(ffmpeg_movie, getVideoStreamId )
+{
+    int stream_id;
+    ff_movie_context *ffmovie_ctx;
+    
+    GET_MOVIE_RESOURCE(ffmovie_ctx);
+   
+    stream_id= _php_get_stream_index(ffmovie_ctx->fmt_ctx, CODEC_TYPE_VIDEO); 
+
+	if( stream_id == -1 )
+	{
+		RETURN_NULL();
+	}
+	else
+	{
+    	RETURN_LONG(stream_id);
+	}
+}
+/* }}} */
+
+/* {{{ proto int getAudioStreamId()
+ */
+PHP_METHOD(ffmpeg_movie, getAudioStreamId )
+{
+    int stream_id;
+    ff_movie_context *ffmovie_ctx;
+    
+    GET_MOVIE_RESOURCE(ffmovie_ctx);
+   
+    stream_id= _php_get_stream_index(ffmovie_ctx->fmt_ctx, CODEC_TYPE_AUDIO); 
+
+	if( stream_id == -1 )
+	{
+		RETURN_NULL();
+	}
+	else
+	{
+    	RETURN_LONG(stream_id);
+	}
+}
+/* }}} */
 
 /* {{{ _php_get_audio_channels()
  */
