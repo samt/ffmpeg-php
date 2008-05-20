@@ -63,6 +63,8 @@ PHP_METHOD(ffmpeg_movie, getAudioSampleRate);
 PHP_METHOD(ffmpeg_movie, getAudioBitRate);
 PHP_METHOD(ffmpeg_movie, getVideoBitRate);
 PHP_METHOD(ffmpeg_movie, getPixelAspectRatio);
+PHP_METHOD(ffmpeg_movie, getVideoStreamId);
+PHP_METHOD(ffmpeg_movie, getAudioStreamId);
 
 #endif // FFMPEG_MOVIE_H
 
