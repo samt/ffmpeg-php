@@ -75,6 +75,7 @@ int main (int argc, char** argv)
     // parse unnamed arguments
     while (argc > 0 && argv[0][0] != '-') {
         filename = argv[0];
+        printf("%s\n", filename);
 
         movie_ctx = qp_alloc_movie_ctx(NULL);
 
@@ -82,6 +83,10 @@ int main (int argc, char** argv)
             err = -1;
             goto done;
         }
+
+        printf("%s\n", movie_ctx->fmt_ctx->filename);
+
+
 
         if (qp_has_video(movie_ctx)) {
             if (terse) {
