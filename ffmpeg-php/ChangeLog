@@ -6,7 +6,14 @@ version 0.5.3-svn
       compiled as extensions.
     * Replaced large mp3 test file with smaller sample to avoid copyright
       issues and reduce package size.
-    * Convert from deprecated img_* functions to swscale
+    * Convert from deprecated img_* functions to swscale. (This doesn't work
+      for resize and crop yet.)
+
+version 0.5.3 (05/30/2008)
+    New Features:
+    * Added 'ffmpeg.show_warnings' ini flag to control whether ffmpeg 
+      warnings are converted to php warnings.
+    * Applied patch to add getAudioStreamId and getVideoStreamId functions 
 
 version 0.5.2.1 (04/03/2008)
 
