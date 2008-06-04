@@ -501,9 +501,9 @@ static AVCodecContext* _php_get_decoder_context(ff_movie_context *ffmovie_ctx,
                     codec_id));
 
         if (!decoder) {
+            zend_error(E_ERROR, "Could not find decoder for %s", 
+                    _php_get_filename(ffmovie_ctx));
             return NULL;
-            /*zend_error(E_ERROR, "Could not find decoder for %s", 
-                    _php_get_filename(ffmovie_ctx));*/
         }
 
         ffmovie_ctx->codec_ctx[stream_index] = 
@@ -1442,7 +1442,7 @@ static double _php_get_sample_aspect_ratio(ff_movie_context *ffmovie_ctx)
 
     decoder_ctx = _php_get_decoder_context(ffmovie_ctx, CODEC_TYPE_VIDEO);
     if (!decoder_ctx) {
-        return 0;
+        return -1;
     }
 
 
@@ -1451,7 +1451,7 @@ static double _php_get_sample_aspect_ratio(ff_movie_context *ffmovie_ctx)
         _php_pre_read_frame(ffmovie_ctx);
         
 		if (decoder_ctx->sample_aspect_ratio.num == 0) {
-			return 0;
+			return -2; // aspect not set
 		}
 	}
 
@@ -1470,6 +1470,10 @@ PHP_METHOD(ffmpeg_movie, getPixelAspectRatio)
     GET_MOVIE_RESOURCE(ffmovie_ctx);
    
     aspect = _php_get_sample_aspect_ratio(ffmovie_ctx); 
+
+    if (aspect < 0) {
+        RETURN_FALSE;
+    }
 
     RETURN_DOUBLE(aspect);
 }
