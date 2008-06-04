@@ -83,6 +83,7 @@ extern void ffmpeg_errorhandler(void *ptr, int level, const char *msg, va_list a
 
 PHP_INI_BEGIN()
     PHP_INI_ENTRY("ffmpeg.allow_persistent", "0", PHP_INI_ALL, NULL)
+    PHP_INI_ENTRY("ffmpeg.show_warnings", "0", PHP_INI_ALL, NULL)
 PHP_INI_END()
 
 
@@ -95,10 +96,13 @@ PHP_MINIT_FUNCTION(ffmpeg)
 
     /* register all codecs */
     av_register_all();
-    av_log_set_callback(ffmpeg_errorhandler);
-
-    REGISTER_INI_ENTRIES();
     
+    REGISTER_INI_ENTRIES();
+ 
+    if (INI_BOOL("ffmpeg.show_warnings")) {
+        av_log_set_callback(ffmpeg_errorhandler);
+    } 
+   
     register_ffmpeg_movie_class(module_number);
     register_ffmpeg_animated_gif_class(module_number);
     register_ffmpeg_frame_class(module_number);
