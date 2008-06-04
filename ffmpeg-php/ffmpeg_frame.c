@@ -236,34 +236,17 @@ static int _php_crop_frame(ff_frame_context *ff_frame,
         return -1;
     }
 
-    tmp_src =ff_frame->av_frame;
+    avcodec_get_frame_defaults(&crop_temp);
+
+    tmp_src = ff_frame->av_frame;
     
-    crop_temp.data[0] = tmp_src->data[0] +
-        (crop_top * tmp_src->linesize[0]) + crop_left;
+    //cropped_frame = avcodec_alloc_frame();
 
-    crop_temp.data[1] = tmp_src->data[1] +
-        ((crop_top >> 1) * tmp_src->linesize[1]) +
-        (crop_left >> 1);
-
-    crop_temp.data[2] = tmp_src->data[2] +
-        ((crop_top >> 1) * tmp_src->linesize[2]) +
-        (crop_left >> 1);
-
-    crop_temp.linesize[0] = tmp_src->linesize[0];
-    crop_temp.linesize[1] = tmp_src->linesize[1];
-    crop_temp.linesize[2] = tmp_src->linesize[2];
-
-    cropped_frame = avcodec_alloc_frame();
-
-    cropped_width = ff_frame->width - (crop_left + crop_right);
-    cropped_height = ff_frame->height - (crop_top + crop_bottom);
+    //avpicture_alloc((AVPicture*)cropped_frame, ff_frame->pixel_format,
+    //        cropped_width, cropped_height);
     
-    avpicture_alloc((AVPicture*)cropped_frame, ff_frame->pixel_format,
-            cropped_width, cropped_height);
-    
-    av_picture_copy((AVPicture*)cropped_frame, 
-                (AVPicture *)&crop_temp, ff_frame->pixel_format, 
-                cropped_width, cropped_height);
+    av_picture_crop((AVPicture *)&crop_temp, (AVPicture *)tmp_src, 
+            ff_frame->pixel_format, crop_top, crop_left);
 
     /* free non-cropped frame */
     _php_free_av_frame(ff_frame->av_frame);
@@ -298,6 +281,10 @@ int _php_resample_frame(ff_frame_context *ff_frame,
         return 0;
     }
  
+    /* convert to PIX_FMT_YUV420P required for resampling */
+    /* FIXME: Is this still needed when using swscale? */
+    _php_convert_frame(ff_frame, PIX_FMT_YUV420P);
+
     /* just crop if wanted dimensions - crop bands = same width/height */
     if (wanted_width == ff_frame->width - (crop_left + crop_right) && 
             wanted_height == ff_frame->height - (crop_left + crop_right)) {
@@ -308,10 +295,6 @@ int _php_resample_frame(ff_frame_context *ff_frame,
     resampled_frame = avcodec_alloc_frame();
     avpicture_alloc((AVPicture*)resampled_frame, PIX_FMT_YUV420P, 
             wanted_width, wanted_height);
-
-    /* convert to PIX_FMT_YUV420P required for resampling */
-    /* FIXME: Is this still needed when using swscale? */
-    _php_convert_frame(ff_frame, PIX_FMT_YUV420P);
 
 // TODO: need to implement cropping
     ffmpeg_img_resample(
