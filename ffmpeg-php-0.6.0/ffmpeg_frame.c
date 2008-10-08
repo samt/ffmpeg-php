@@ -155,6 +155,7 @@ static void _php_free_av_frame(AVFrame *av_frame)
 }
 /* }}} */
 
+
 /* {{{ _php_free_ffmpeg_frame()
  */
 static void _php_free_ffmpeg_frame(zend_rsrc_list_entry *rsrc TSRMLS_DC)
@@ -490,6 +491,7 @@ PHP_FUNCTION(getHeight)
     RETURN_LONG(ff_frame->height);
 }
 /* }}} */
+
 
 /*
  * Local variables:
