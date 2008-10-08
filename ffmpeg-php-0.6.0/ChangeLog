@@ -1,11 +1,13 @@
 ChangeLog for ffmpeg-php (ffmpeg-php.sourceforge.net)
 
-version 0.5.3.1
-    New Features:
-    * Remove deprecated av_free_static function to allow building with ffmpeg
-      svn.
-    * Replaced copyrighted test media with public domain files. This reduces
-      the package size quite a bit.
+version 0.5.3-svn
+    Bug Fixes:
+    * Added check to ensure that gd loads before ffmpeg-php if both are
+      compiled as extensions.
+    * Replaced large mp3 test file with smaller sample to avoid copyright
+      issues and reduce package size.
+    * Convert from deprecated img_* functions to swscale. (This doesn't work
+      for resize and crop yet.)
 
 version 0.5.3 (05/30/2008)
     New Features:
