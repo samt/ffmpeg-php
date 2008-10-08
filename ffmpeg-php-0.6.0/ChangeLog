@@ -1,6 +1,15 @@
 ChangeLog for ffmpeg-php (ffmpeg-php.sourceforge.net)
 
-version 0.5.3-svn
+
+
+version 0.6.0-svn
+    New Features:
+    * Support for ffmpeg swscale API
+
+    API Changes:
+    * Removed obsolete resize() and crop() functions. These operations are
+      more flexibly done using the gd commands.
+
     Bug Fixes:
     * Added check to ensure that gd loads before ffmpeg-php if both are
       compiled as extensions.
