@@ -105,6 +105,11 @@ A: ffmpeg-php can't find ffmpeg header files. Make sure when you configure
    ffmpeg you use the '--enable-shared' option and make sure it installs 
    somewhere where other programs can find the libs/headers. See 
    'BUILDING FFMPEG' above for an example.
+
+Q: Can I just pay you to install it?
+
+A: Yes. I will install ffmpeg-php and prerequisites on your server for $75 USD.
+   Shoot me an email at ffmpeg.php AT gmail.com if you are interested.
  
 FURTHER HELP
 ------------
