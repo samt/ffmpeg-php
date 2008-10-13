@@ -36,6 +36,8 @@
 #ifndef PHP_FFMPEG_H
 #define PHP_FFMPEG_H
 
+#define FFMPEG_PHP_METHOD PHP_METHOD
+
 #define SAFE_STRING(s) ((s)?(s):"")
 
 #ifndef safe_emalloc

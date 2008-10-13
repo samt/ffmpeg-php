@@ -36,6 +36,8 @@
 #ifndef FFMPEG_FRAME_H
 #define FFMPEG_FRAME_H
 
+#include "php_version.h"
+
 #include <avcodec.h>
 #include <avformat.h>
 
@@ -43,14 +45,17 @@
 #include "config.h"
 #endif
 
-PHP_FUNCTION(ffmpeg_frame);
-PHP_FUNCTION(getWidth);
-PHP_FUNCTION(getHeight);
-PHP_FUNCTION(isKeyFrame);
-PHP_FUNCTION(getPresentationTimestamp);
+/* frame constructor */
+FFMPEG_PHP_METHOD(ffmpeg_frame, __construct);
+
+/* frame methods */
+FFMPEG_PHP_METHOD(ffmpeg_frame, getWidth);
+FFMPEG_PHP_METHOD(ffmpeg_frame, getHeight);
+FFMPEG_PHP_METHOD(ffmpeg_frame, isKeyFrame);
+FFMPEG_PHP_METHOD(ffmpeg_frame, getPresentationTimestamp);
 
 #if HAVE_LIBGD20
-PHP_FUNCTION(toGDImage);
+FFMPEG_PHP_METHOD(ffmpeg_frame, toGDImage);
 #endif // HAVE_LIBGD20
 
 typedef struct {

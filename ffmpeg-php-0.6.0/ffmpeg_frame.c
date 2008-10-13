@@ -77,22 +77,21 @@ zend_class_entry ffmpeg_frame_class_entry;
     Methods of the ffmpeg_frame class 
 */
 zend_function_entry ffmpeg_frame_class_methods[] = {
-   
-#if HAVE_LIBGD20
-    /* contructor */
-    PHP_FE(ffmpeg_frame, NULL)
-
-    /* gd methods */
-    PHP_FALIAS(togdimage,      toGDImage,     NULL)
     
+    /* contructor */
+    PHP_ME(ffmpeg_frame, __construct, NULL, 0)
+  
+#if HAVE_LIBGD20
+    /* gd methods */
+    PHP_MALIAS(ffmpeg_frame, togdimage,      toGDImage,     NULL, 0)
 #endif // HAVE_LIBGD20
 
     /* methods */
-    PHP_FALIAS(getwidth,                    getWidth,                   NULL)
-    PHP_FALIAS(getheight,                   getHeight,                  NULL)
-    PHP_FALIAS(iskeyframe,                  isKeyFrame,                 NULL)
-    PHP_FALIAS(getpresentationtimestamp,    getPresentationTimestamp,   NULL)
-    PHP_FALIAS(getpts,                      getPresentationTimestamp,   NULL)
+    PHP_MALIAS(ffmpeg_frame, getwidth,                    getWidth,                   NULL, 0)
+    PHP_MALIAS(ffmpeg_frame, getheight,                   getHeight,                  NULL, 0)
+    PHP_MALIAS(ffmpeg_frame, iskeyframe,                  isKeyFrame,                 NULL, 0)
+    PHP_MALIAS(ffmpeg_frame, getpresentationtimestamp,    getPresentationTimestamp,   NULL, 0)
+    PHP_MALIAS(ffmpeg_frame, getpts,                      getPresentationTimestamp,   NULL, 0)
 	{NULL, NULL, NULL}
 };
 /* }}} */
@@ -327,7 +326,7 @@ static int _php_gd_image_to_avframe(gdImage *src, AVFrame *frame, int width,
 
 /* {{{ proto resource toGDImage()
  */
-PHP_FUNCTION(toGDImage)
+FFMPEG_PHP_METHOD(ffmpeg_frame, toGDImage)
 {
     ff_frame_context *ff_frame;
     gdImage *gd_img;
@@ -374,7 +373,7 @@ PHP_FUNCTION(toGDImage)
 
 /* {{{ proto object ffmpeg_frame(mixed)
  */
-PHP_FUNCTION(ffmpeg_frame)
+FFMPEG_PHP_METHOD(ffmpeg_frame, ffmpeg_frame)
 {
     zval **argv[1];
     AVFrame *frame;
@@ -443,7 +442,7 @@ PHP_FUNCTION(ffmpeg_frame)
 
 /* {{{ proto int getPresentationTimestamp()
  */
-PHP_FUNCTION(getPresentationTimestamp)
+FFMPEG_PHP_METHOD(ffmpeg_frame, getPresentationTimestamp)
 {
     ff_frame_context *ff_frame;
 
@@ -456,7 +455,7 @@ PHP_FUNCTION(getPresentationTimestamp)
 
 /* {{{ proto int isKeyFrame()
  */
-PHP_FUNCTION(isKeyFrame)
+FFMPEG_PHP_METHOD(ffmpeg_frame, isKeyFrame)
 {
     ff_frame_context *ff_frame;
 
@@ -469,7 +468,7 @@ PHP_FUNCTION(isKeyFrame)
 
 /* {{{ proto int getWidth()
  */
-PHP_FUNCTION(getWidth)
+FFMPEG_PHP_METHOD(ffmpeg_frame, getWidth)
 {
     ff_frame_context *ff_frame;
 
@@ -482,7 +481,7 @@ PHP_FUNCTION(getWidth)
 
 /* {{{ proto int getHeight()
  */
-PHP_FUNCTION(getHeight)
+FFMPEG_PHP_METHOD(ffmpeg_frame, getHeight)
 {
     ff_frame_context *ff_frame;
 
