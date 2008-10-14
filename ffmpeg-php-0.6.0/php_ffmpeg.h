@@ -36,7 +36,17 @@
 #ifndef PHP_FFMPEG_H
 #define PHP_FFMPEG_H
 
-#define FFMPEG_PHP_METHOD PHP_METHOD
+#include "php_version.h"
+
+#if PHP_MAJOR_VERSION <= 4
+#define FFMPEG_PHP_METHOD(a,b) PHP_FUNCTION(b)
+#define FFMPEG_PHP_ME(a,b,c,d) PHP_FE(a,c)
+#define FFMPEG_PHP_MALIAS(a,b,c,d,e) PHP_FALIAS(b,c)
+#else // PHP 5
+#define FFMPEG_PHP_METHOD(a,b) PHP_METHOD(a,b)
+#define FFMPEG_PHP_ME(a,b,c,d) PHP_ME(a,b,c,d)
+#define FFMPEG_PHP_MALIAS(a,b,c,d,e) PHP_MALIAS(a,b,c,d,e)
+#endif
 
 #define SAFE_STRING(s) ((s)?(s):"")
 
