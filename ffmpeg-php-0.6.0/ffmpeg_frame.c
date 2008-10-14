@@ -78,8 +78,8 @@ zend_class_entry ffmpeg_frame_class_entry;
 */
 zend_function_entry ffmpeg_frame_class_methods[] = {
     
-    /* contructor */
-    PHP_ME(ffmpeg_frame, __construct, NULL, 0)
+    /* object can't be created from user space so no PHP constructor */
+    //PHP_ME(ffmpeg_frame, __construct, NULL, 0)
   
 #if HAVE_LIBGD20
     /* gd methods */

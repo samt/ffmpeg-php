@@ -45,8 +45,8 @@
 #include "config.h"
 #endif
 
-/* frame constructor */
-FFMPEG_PHP_METHOD(ffmpeg_frame, __construct);
+/* object can't be created from user space so no PHP constructor */
+//FFMPEG_PHP_METHOD(ffmpeg_frame, __construct);
 
 /* frame methods */
 FFMPEG_PHP_METHOD(ffmpeg_frame, getWidth);
