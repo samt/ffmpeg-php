@@ -61,8 +61,11 @@ foreach($movies as $movie) {
         printf("get video bit rate = %d\n", $mov->getVideoBitRate());
         printf("get pixel format = %s\n", $mov->getPixelFormat());
         printf("get pixel aspect ratio = %s\n", $mov->getPixelAspectRatio());
-        printf("get frame = %s\n", is_object($mov->getFrame(10)) ? 'true' : 'false');
-        printf("get frame number = %d\n", $mov->getFrameNumber());
+        $frame = $mov->getFrame(10);
+        printf("get frame = %s\n", is_object($frame) ? 'true' : 'false');
+        printf("  get frame number = %d\n", $mov->getFrameNumber());
+        printf("  get frame width = %d\n", $frame->getWidth());
+        printf("  get frame height = %d\n", $frame->getHeight());
     }
     echo "\n--------------------\n\n";
 }
