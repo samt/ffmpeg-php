@@ -51,6 +51,7 @@
 #include "ext/standard/info.h"
 
 #include "php_ffmpeg.h"
+#include "ffmpeg_errorhandler.h"
 
 #define FFMPEG_PHP_VERSION "0.6.0-svn"
 
@@ -78,7 +79,6 @@ ZEND_GET_MODULE(ffmpeg);
 
 extern void register_ffmpeg_movie_class(int);
 extern void register_ffmpeg_frame_class(int);
-extern void ffmpeg_errorhandler(void *ptr, int level, const char *msg, va_list args);
 
 PHP_INI_BEGIN()
     PHP_INI_ENTRY("ffmpeg.allow_persistent", "0", PHP_INI_ALL, NULL)
@@ -100,7 +100,9 @@ PHP_MINIT_FUNCTION(ffmpeg)
  
     if (INI_BOOL("ffmpeg.show_warnings")) {
         av_log_set_callback(ffmpeg_errorhandler);
-    } 
+    } else {
+        av_log_set_callback(ffmpeg_hide_errors);
+    }
    
     register_ffmpeg_movie_class(module_number);
     register_ffmpeg_frame_class(module_number);

@@ -33,45 +33,6 @@
 
  */
 
-#include "php.h"
-#include <avcodec.h>
 
-/* {{{ ffmpeg_errorhandler()
- */
-void ffmpeg_errorhandler(void *ptr, int level, const char *msg, va_list args)
-{
-	int php_level;
-	TSRMLS_FETCH();
-
-	switch (level) {
-		case AV_LOG_ERROR:
-			php_level = E_WARNING;
-		break;
-
-		case AV_LOG_INFO:
-		case AV_LOG_DEBUG:
-		default:
-			php_level = E_NOTICE;
-		break;
-	}
-
-	php_verror("", "", php_level, msg, args TSRMLS_CC);
-}
-/* }}} */
-
-
-void ffmpeg_hide_errors(void *ptr, int level, const char *msg, va_list args)
-{
-    // NO OP
-}
-/* }}} */
-
-
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * End:
- * vim600: noet sw=4 ts=4
- * vim<600: noet sw=4 ts=4
- */
+void ffmpeg_errorhandler(void *ptr, int level, const char *msg, va_list args);
+void ffmpeg_hide_errors(void *ptr, int level, const char *msg, va_list args);
