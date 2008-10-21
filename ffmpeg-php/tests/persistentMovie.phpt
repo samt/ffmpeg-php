@@ -1,5 +1,7 @@
 --TEST--
 ffmpeg persistent movie test
+--INI--
+ffmpeg.allow_persistent=1
 --SKIPIF--
 <?php extension_loaded('ffmpeg') or die("ffmpeg extension not loaded"); ?>
 --FILE--
