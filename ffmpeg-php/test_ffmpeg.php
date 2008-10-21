@@ -4,7 +4,7 @@
  * as a simple manual test script and an example of the syntax for calling
  * the ffmpeg-php functions.
  * 
- * To run it from the command line type 'php -q ffmpeg_test.php ' or from a 
+ * To run it from the command line type 'php -q test_ffmpeg.php ' or from a 
  * browser copy this file into your web root and point your browser at it.
  */
 
@@ -67,6 +67,7 @@ foreach($movies as $movie) {
     ff_print_method_result($mov, 'getFrameNumber');
     ff_print_method_result($frame, 'getWidth');
     ff_print_method_result($frame, 'getHeight');
+    ff_print_method_result($frame, 'toGDImage');
 echo "\n--------------------\n\n";
 }
 
