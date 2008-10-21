@@ -60,6 +60,18 @@ static int le_gd; // this is only valid after calling
 
 #endif // HAVE_LIBGD20
 
+#define GET_FRAME_RESOURCE(ffmpeg_frame_object, ffmpeg_frame) {\
+	zval **_tmp_zval;\
+    if (zend_hash_find(Z_OBJPROP_P(ffmpeg_frame_object), "ffmpeg_frame",\
+                sizeof("ffmpeg_frame"), (void **)&_tmp_zval) == FAILURE) {\
+        zend_error(E_ERROR, "Unable to locate ffmpeg_frame resource in this object.");\
+        RETURN_FALSE;\
+    }\
+\
+    ZEND_FETCH_RESOURCE(ffmpeg_frame, ff_frame_context*, _tmp_zval, -1,\
+            "ffmpeg_frame", le_ffmpeg_frame);\
+}\
+
 int le_ffmpeg_frame; // not static since it is used in ffmpeg_output_movie
 
 static zend_class_entry *ffmpeg_frame_class_entry_ptr;
@@ -333,27 +345,6 @@ FFMPEG_PHP_METHOD(ffmpeg_frame, toGDImage)
         zend_error(E_ERROR, "failed to convert frame to gd image");
     }
 }
-/* }}} */
-
-
-/* {{{ proto object _php_read_frame_from_file(mixed)
- */
-/*_php_read_frame_from_file(ff_frame_context *ff_frame, char* filename)
-{
-    AVFrame *frame = NULL;
-    AVFormatContext *ic;
-    AVFormatParameters *ap;
-    int err;
-
-    // open the input file with generic libav function
-    err = av_open_input_file(&ic, filename, NULL, 0, ap);
-    if (err < 0) {
-        zend_error(E_ERROR, "Can't open image file %d, %d", err, 
-        AVERROR_NOFMT);
-    }
-
-    
-}*/
 /* }}} */
 
 
