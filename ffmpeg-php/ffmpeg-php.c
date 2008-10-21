@@ -140,7 +140,7 @@ PHP_MSHUTDOWN_FUNCTION(ffmpeg)
 
 
 /* {{{ php info function
-   Add an entry for ffmpeg support in phpinfo() */
+   Add an entry for ffmpeg-php support in phpinfo() */
 PHP_MINFO_FUNCTION(ffmpeg)
 {
     php_info_print_table_start();
