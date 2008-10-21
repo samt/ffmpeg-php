@@ -2,7 +2,7 @@
 /*
  * This test script is not part of the automatic regression tests. It serves
  * as a simple manual test script and an example of the syntax for calling
- * the ffmpeg-php functions
+ * the ffmpeg-php functions.
  * 
  * To run it from the command line type 'php -q ffmpeg_test.php ' or from a 
  * browser copy this file into your web root and point your browser at it.
@@ -28,53 +28,59 @@ printf("libavcodec version number: %d\n", LIBAVCODEC_VERSION_NUMBER);
 
 printf("ffmpeg-php gd enabled: %s\n", FFMPEG_PHP_GD_ENABLED ? 'TRUE' : 'FALSE');
 
-print_class_methods("ffmpeg_movie");
-print_class_methods("ffmpeg_frame");
+$movie_methods = print_class_methods("ffmpeg_movie");
+$frame_methods = print_class_methods("ffmpeg_frame");
 
 // get an array for movies from the test media directory 
 $movies = getDirFiles(dirname(__FILE__) . '/tests/test_media');
 
 echo "--------------------\n\n";
 foreach($movies as $movie) {        
+    printf("TEST FILE: %s\n", basename($movie));
     $mov = new ffmpeg_movie($movie);
-    printf("file name = %s\n", $mov->getFileName());
-    printf("duration = %s seconds\n", $mov->getDuration());
-    printf("frame count = %s\n", $mov->getFrameCount());
-    printf("frame rate = %0.3f fps\n", $mov->getFrameRate());
-    printf("comment = %s\n", $mov->getComment());
-    printf("title = %s\n", $mov->getTitle());
-    printf("author = %s\n", $mov->getAuthor());
-    printf("copyright = %s\n", $mov->getCopyright());
-    printf("get bit rate = %d\n", $mov->getBitRate());
-    printf("has audio = %s\n", $mov->hasAudio() == 0 ? 'No' : 'Yes');
-    if ($mov->hasAudio()) {
-        printf("get audio stream id= %s\n", $mov->getAudioStreamId());
-        printf("get audio codec = %s\n", $mov->getAudioCodec());
-        printf("get audio bit rate = %d\n", $mov->getAudioBitRate());
-        printf("get audio sample rate = %d \n", $mov->getAudioSampleRate());
-        printf("get audio channels = %s\n", $mov->getAudioChannels());
-    }
-    printf("has video = %s\n", $mov->hasVideo() == 0 ? 'No' : 'Yes');
-    if ($mov->hasVideo()) {
-        printf("frame height = %d pixels\n", $mov->getFrameHeight());
-        printf("frame width = %d pixels\n", $mov->getFrameWidth());
-        printf("get video stream id= %s\n", $mov->getVideoStreamId());
-        printf("get video codec = %s\n", $mov->getVideoCodec());
-        printf("get video bit rate = %d\n", $mov->getVideoBitRate());
-        printf("get pixel format = %s\n", $mov->getPixelFormat());
-        printf("get pixel aspect ratio = %s\n", $mov->getPixelAspectRatio());
-        $frame = $mov->getFrame(10);
-        printf("get frame = %s\n", is_object($frame) ? 'true' : 'false');
-        printf("  get frame number = %d\n", $mov->getFrameNumber());
-        printf("  get frame width = %d\n", $frame->getWidth());
-        printf("  get frame height = %d\n", $frame->getHeight());
-    }
-    echo "\n--------------------\n\n";
+    ff_print_method_result($mov, 'getFileName');
+    ff_print_method_result($mov, 'getFrameCount');
+    ff_print_method_result($mov, 'getFrameRate');
+    ff_print_method_result($mov, 'getComment');
+    ff_print_method_result($mov, 'getTitle');
+    ff_print_method_result($mov, 'getAuthor');
+    ff_print_method_result($mov, 'getCopyright');
+    ff_print_method_result($mov, 'getBitRate');
+    ff_print_method_result($mov, 'hasAudio');
+    ff_print_method_result($mov, 'getAudioStreamId');
+    ff_print_method_result($mov, 'getAudioCodec');
+    ff_print_method_result($mov, 'getAudioBitRate');
+    ff_print_method_result($mov, 'getAudioSampleRate');
+    ff_print_method_result($mov, 'getAudioChannels');
+    ff_print_method_result($mov, 'hasVideo');
+    ff_print_method_result($mov, 'getFrameHeight');
+    ff_print_method_result($mov, 'getFrameWidth');
+    ff_print_method_result($mov, 'getVideoStreamId');
+    ff_print_method_result($mov, 'getVideoCodec');
+    ff_print_method_result($mov, 'getVideoBitRate');
+    ff_print_method_result($mov, 'getPixelFormat');
+    ff_print_method_result($mov, 'getPixelAspectRatio');
+    ff_print_method_result($mov, 'getFrameNumber');
+    $frame = ff_print_method_result($mov, 'getFrame', 10);
+    ff_print_method_result($mov, 'getFrameNumber');
+    ff_print_method_result($frame, 'getWidth');
+    ff_print_method_result($frame, 'getHeight');
+echo "\n--------------------\n\n";
 }
 
 if (php_sapi_name() != 'cli') {
     echo '</pre>';
 }
+
+function ff_print_method_result($object, $method, $arg='') {
+    $result = @$object->$method($arg);
+    if ($result) {
+        $p_result = is_object($result) ?  get_class($result) : $result;
+        printf("%s->%s(%s) = %s\n", get_class($object), $method, $arg, $p_result);
+    }
+    return $result;
+}
+
 
 /* FUNCTIONS */
 function print_class_methods($class) {
@@ -86,7 +92,9 @@ function print_class_methods($class) {
         }
     } else {
         echo "No Methods Defined\n";
+        return array();
     }
+    return $methods;
 }
 
 function getDirFiles($dirPath)
