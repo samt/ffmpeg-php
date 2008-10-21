@@ -2,8 +2,9 @@ ChangeLog for ffmpeg-php (ffmpeg-php.sourceforge.net)
 
 version 0.6.1-svn
     Bug Fixes
-    * ffmpeg errors don't pollute stderr when ffmpeg.show_warnings is set
+    * Ffmpeg errors don't pollute stderr when ffmpeg.show_warnings is set
       to false
+    * Remove reliance on gd internals
 
 version 0.6.0 (10/15/2008)
     New Features:
