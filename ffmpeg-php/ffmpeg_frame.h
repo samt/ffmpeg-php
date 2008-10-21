@@ -45,7 +45,7 @@
 #include "config.h"
 #endif
 
-/* object can't be created from user space so no PHP constructor */
+/* ffmpeg_frame can't be instanciated from user space so no PHP constructor */
 //FFMPEG_PHP_METHOD(ffmpeg_frame, __construct);
 
 /* frame methods */
