@@ -47,24 +47,16 @@
 #include "ffmpeg_frame.h"
 #include "ffmpeg_tools.h"
 
-/* 
-   include gd header from local include dir. This is a copy of gd.h that is 
-   distributed with php-5.2.5. It is distributed along with ffmpeg-php to
-   allow ffmpeg-php to be built without access to the php sources
- */
 #if HAVE_LIBGD20
-#include "gd.h" 
+#include "gd/libgd/gd.h" 
 
 #define FFMPEG_PHP_FETCH_IMAGE_RESOURCE(gd_img, ret) { \
     ZEND_GET_RESOURCE_TYPE_ID(le_gd, "gd"); \
     ZEND_FETCH_RESOURCE(gd_img, gdImagePtr, ret, -1, "Image", le_gd); \
 }
 
-// Borrowed from gd.c
-#define gdImageBoundsSafeMacro(im, x, y) (!((((y) < (im)->cy1) || ((y) > (im)->cy2)) || (((x) < (im)->cx1) || ((x) > (im)->cx2))))
-
 static int le_gd; // this is only valid after calling 
-                  // FFMPEG_PHP_FETCH_IMAGE_RESOURCE() 
+                  // FFMPEG_PHP_FETCH_IMAGE_RESOURCE() macro
 
 #endif // HAVE_LIBGD20
 
@@ -286,13 +278,7 @@ static int _php_avframe_to_gd_image(AVFrame *frame, gdImage *dest, int width,
 
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-		
-			if (gdImageBoundsSafeMacro(dest, x, y)) {
-                /* copy pixel to gdimage buffer zeroing the alpha channel */
-                dest->tpixels[y][x] = src[x] & 0x00ffffff;
-            } else {
-                return -1;
-            }
+            gdImageSetPixel(dest, x, y, src[x]);
         }
         src += width;
     }
