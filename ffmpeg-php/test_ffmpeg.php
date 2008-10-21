@@ -28,7 +28,9 @@ printf("libavcodec version number: %d\n", LIBAVCODEC_VERSION_NUMBER);
 
 printf("ffmpeg-php gd enabled: %s\n", FFMPEG_PHP_GD_ENABLED ? 'TRUE' : 'FALSE');
 
-$movie_methods = print_class_methods("ffmpeg_movie");
+// get movie methods minus the contructor
+$movie_methods = array_shift(print_class_methods("ffmpeg_movie"));
+
 $frame_methods = print_class_methods("ffmpeg_frame");
 
 // get an array for movies from the test media directory 
@@ -72,6 +74,8 @@ if (php_sapi_name() != 'cli') {
     echo '</pre>';
 }
 
+
+/* FUNCTIONS */
 function ff_print_method_result($object, $method, $arg='') {
     $result = @$object->$method($arg);
     if ($result) {
@@ -81,8 +85,6 @@ function ff_print_method_result($object, $method, $arg='') {
     return $result;
 }
 
-
-/* FUNCTIONS */
 function print_class_methods($class) {
     echo "\nMethods available in class '$class':\n";
     $methods = get_class_methods($class);
@@ -96,6 +98,7 @@ function print_class_methods($class) {
     }
     return $methods;
 }
+
 
 function getDirFiles($dirPath)
 {
@@ -111,6 +114,5 @@ function getDirFiles($dirPath)
 
     return $filesArr;   
 }
-
 
 ?>
