@@ -299,29 +299,6 @@ static int _php_avframe_to_gd_image(AVFrame *frame, gdImage *dest, int width,
 /* }}} */
 
 
-/* {{{ _php_gd_image_to_avframe()
- */
-static int _php_gd_image_to_avframe(gdImage *src, AVFrame *frame, int width, 
-        int height) 
-{
-    int x, y;
-    int *dest = (int*)frame->data[0];
-
-    for (y = 0; y < height; y++) {
-        for (x = 0; x < width; x++) {
-            if (gdImageBoundsSafeMacro(src, x, y)) {
-                dest[x] = src->tpixels[y][x];
-            } else {
-                return -1;
-            }
-        }
-        dest += width;
-    }
-    return 0;
-}
-/* }}} */
-
-
 /* {{{ proto resource toGDImage()
  */
 FFMPEG_PHP_METHOD(ffmpeg_frame, toGDImage)
@@ -347,72 +324,6 @@ FFMPEG_PHP_METHOD(ffmpeg_frame, toGDImage)
 }
 /* }}} */
 
-
-/* {{{ proto object ffmpeg_frame(mixed)
- */
-FFMPEG_PHP_METHOD(ffmpeg_frame, ffmpeg_frame)
-{
-    zval **argv[1];
-    AVFrame *frame;
-    gdImage *gd_img;
-    ff_frame_context *ff_frame;
-    int width, height, ret;
-
-    if (ZEND_NUM_ARGS() != 1) {
-        WRONG_PARAM_COUNT;
-    }
-
-    /* retrieve argument */
-    if (zend_get_parameters_array_ex(ZEND_NUM_ARGS(), argv) != SUCCESS) {
-        php_error_docref(NULL TSRMLS_CC, E_ERROR,
-                "Error parsing arguments");
-    }
-
-    ff_frame = _php_alloc_ff_frame();
-    
-	ret = ZEND_REGISTER_RESOURCE(NULL, ff_frame, le_ffmpeg_frame);
-    
-    object_init_ex(getThis(), ffmpeg_frame_class_entry_ptr);
-    add_property_resource(getThis(), "ffmpeg_frame", ret);
-    
-    switch (Z_TYPE_PP(argv[0])) {
-        case IS_STRING:
-            convert_to_string_ex(argv[0]);
-            zend_error(E_ERROR, 
-                  "Creating an ffmpeg_frame from a file is not implemented\n");
-            //_php_read_frame_from_file(ff_frame, Z_STRVAL_PP(argv[0]));
-            break;
-        case IS_RESOURCE:
-            FFMPEG_PHP_FETCH_IMAGE_RESOURCE(gd_img, argv[0]);
-
-            if (!gd_img->trueColor) {
-                php_error_docref(NULL TSRMLS_CC, E_ERROR,
-                        "First parameter must be a truecolor gd image.");
-            }
-
-            width = gdImageSX(gd_img);
-            height = gdImageSY(gd_img);
-
-            /* create a an av_frame and allocate space for it */
-            frame = avcodec_alloc_frame();
-            avpicture_alloc((AVPicture*)frame, PIX_FMT_RGBA32, width, height);
-
-            /* copy the gd image to the av_frame */
-            _php_gd_image_to_avframe(gd_img, frame, width, height);
-            
-            /* set the ffmepg_frame to point to this av_frame */
-            ff_frame->av_frame = frame;
-            
-            /* set the ffpmeg_frame's properties */
-            ff_frame->width = width;
-            ff_frame->height = height;
-            ff_frame->pixel_format = PIX_FMT_RGBA32;
-            break;
-        default:
-            zend_error(E_ERROR, "Invalid argument\n");
-    }
-}
-/* }}} */
 
 #endif /* HAVE_LIBGD20 */
 
