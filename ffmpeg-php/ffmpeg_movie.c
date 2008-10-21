@@ -592,6 +592,7 @@ FFMPEG_PHP_METHOD(ffmpeg_movie, getAlbum)
 }
 /* }}} */
 
+
 /* {{{ proto string getGenre()
  *  Return ID3 genre field from an mp3 file
  */
@@ -619,6 +620,7 @@ FFMPEG_PHP_METHOD(ffmpeg_movie, getTrackNumber)
     RETURN_LONG(ffmovie_ctx->fmt_ctx->track);
 }
 /* }}} */
+
 
 /* {{{ proto int getYear()
  *  Return ID3 year field from an mp3 file
