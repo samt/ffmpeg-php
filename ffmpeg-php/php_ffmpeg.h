@@ -44,13 +44,15 @@
  * to the function macros for PHP-4
  */
 #if PHP_MAJOR_VERSION <= 4 // PHP4; use FUNCTION macros
-#define FFMPEG_PHP_METHOD(a,b) PHP_FUNCTION(b)
+#define FFMPEG_PHP_METHOD(a,b) PHP_FUNCTION(a)
 #define FFMPEG_PHP_ME(a,b,c,d) PHP_FE(a,c)
 #define FFMPEG_PHP_MALIAS(a,b,c,d,e) PHP_FALIAS(b,c,d)
+#define FFMPEG_PHP_END_METHODS {NULL, NULL, NULL}
 #else /* PHP5; Use METHOD macros */
 #define FFMPEG_PHP_METHOD(a,b) PHP_METHOD(a,b)
 #define FFMPEG_PHP_ME(a,b,c,d) PHP_ME(a,b,c,d)
 #define FFMPEG_PHP_MALIAS(a,b,c,d,e) PHP_MALIAS(a,b,c,d,e)
+#define FFMPEG_PHP_END_METHODS {NULL, NULL, NULL, 0, 0}
 #endif
 
 #define SAFE_STRING(s) ((s)?(s):"")

@@ -38,6 +38,8 @@
 
 #include "php_version.h"
 
+#include "php_ffmpeg.h"
+
 #include <avcodec.h>
 #include <avformat.h>
 

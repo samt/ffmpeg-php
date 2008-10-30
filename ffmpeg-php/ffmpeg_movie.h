@@ -32,6 +32,8 @@
 #ifndef FFMPEG_MOVIE_H
 #define FFMPEG_MOVIE_H
 
+#include "php_ffmpeg.h"
+
 /* movie constructor */
 FFMPEG_PHP_METHOD(ffmpeg_movie, __construct);
 
