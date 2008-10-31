@@ -91,11 +91,11 @@ zend_function_entry ffmpeg_frame_class_methods[] = {
 #endif // HAVE_LIBGD20
 
     /* methods */
-    PHP_MALIAS(ffmpeg_frame, getwidth,                    getWidth,                   NULL, 0)
-    PHP_MALIAS(ffmpeg_frame, getheight,                   getHeight,                  NULL, 0)
-    PHP_MALIAS(ffmpeg_frame, iskeyframe,                  isKeyFrame,                 NULL, 0)
-    PHP_MALIAS(ffmpeg_frame, getpresentationtimestamp,    getPresentationTimestamp,   NULL, 0)
-    PHP_MALIAS(ffmpeg_frame, getpts,                      getPresentationTimestamp,   NULL, 0)
+    FFMPEG_PHP_MALIAS(ffmpeg_frame, getwidth,                    getWidth,                   NULL, 0)
+    FFMPEG_PHP_MALIAS(ffmpeg_frame, getheight,                   getHeight,                  NULL, 0)
+    FFMPEG_PHP_MALIAS(ffmpeg_frame, iskeyframe,                  isKeyFrame,                 NULL, 0)
+    FFMPEG_PHP_MALIAS(ffmpeg_frame, getpresentationtimestamp,    getPresentationTimestamp,   NULL, 0)
+    FFMPEG_PHP_MALIAS(ffmpeg_frame, getpts,                      getPresentationTimestamp,   NULL, 0)
 	{NULL, NULL, NULL}
 };
 /* }}} */
