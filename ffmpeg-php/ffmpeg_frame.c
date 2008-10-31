@@ -87,7 +87,7 @@ zend_function_entry ffmpeg_frame_class_methods[] = {
   
 #if HAVE_LIBGD20
     /* gd methods */
-    PHP_MALIAS(ffmpeg_frame, togdimage,      toGDImage,     NULL, 0)
+    FFMPEG_PHP_MALIAS(ffmpeg_frame, togdimage,      toGDImage,     NULL, 0)
 #endif // HAVE_LIBGD20
 
     /* methods */
@@ -96,7 +96,7 @@ zend_function_entry ffmpeg_frame_class_methods[] = {
     FFMPEG_PHP_MALIAS(ffmpeg_frame, iskeyframe,                  isKeyFrame,                 NULL, 0)
     FFMPEG_PHP_MALIAS(ffmpeg_frame, getpresentationtimestamp,    getPresentationTimestamp,   NULL, 0)
     FFMPEG_PHP_MALIAS(ffmpeg_frame, getpts,                      getPresentationTimestamp,   NULL, 0)
-	{NULL, NULL, NULL}
+    FFMPEG_PHP_END_METHODS
 };
 /* }}} */
 
