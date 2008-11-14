@@ -501,7 +501,7 @@ static AVCodecContext* _php_get_decoder_context(ff_movie_context *ffmovie_ctx,
                     codec_id));
 
         if (!decoder) {
-            zend_error(E_ERROR, "Could not find decoder for %s", 
+            zend_error(E_WARNING, "Could not find decoder for %s", 
                     _php_get_filename(ffmovie_ctx));
             return NULL;
         }
