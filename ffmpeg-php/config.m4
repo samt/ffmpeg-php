@@ -33,6 +33,7 @@ if test "$PHP_FFMPEG" != "no"; then
     elif test -f $i/include/libavcodec/avcodec.h; then
       dnl ffmpeg svn revision 12194 and newer put each header in its own dir
       dnl so we have to include them all.
+      PHP_ADD_INCLUDE($i/include/)
       PHP_ADD_INCLUDE($i/include/libavcodec/)
       PHP_ADD_INCLUDE($i/include/libavformat/)
       PHP_ADD_INCLUDE($i/include/libavutil/)
